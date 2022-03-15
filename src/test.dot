@@ -1,0 +1,10 @@
+digraph G {
+    splines="FALSE";
+
+
+"Room 1" -> "Room 2" [taillabel=n, tailport=n, headport=s, constraint=FALSE]
+"Room 2" -> "Room 3" [tailport=e, headport=w, constraint=FALSE]
+"Room 3" -> "Room 1" []
+A -> B
+B -> A
+}
