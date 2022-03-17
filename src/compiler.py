@@ -7,15 +7,27 @@ from zmapListenerImpl import zmapListenerImpl
 
 from map import *
 
-# class Compiler:
-#     def compile(self, source):
-#         map = Map()
-#         lines = source.split('\n')
-#         [self.compile_line(line, map) for line in lines]
-#         return map
+from PyQt5.QtCore import QRectF
 
-#     def compile_line(self, line, map):
+class Compiler:
+    def compile(self, source, scene):
+        input_stream = InputStream(source)
+        lexer = zmapLexer(input_stream)
+        stream = CommonTokenStream(lexer)
+        parser = zmapParser(stream)
+        tree = parser.parse()
+        listener = zmapListenerImpl()
+        walker = ParseTreeWalker()
+        walker.walk(listener, tree)
+        listener.new_map.position_rooms()
         
+        for room in listener.new_map.rooms.values():
+            print(room.position)
+            x = 200+100*room.position[0]
+            y = 200+100*room.position[1]
+            scene.addRect(QRectF(x, y, 50, 50))
+    
+
 
  
 if __name__ == '__main__':
@@ -142,10 +154,7 @@ if __name__ == '__main__':
     listener = zmapListenerImpl()
     walker = ParseTreeWalker()
     walker.walk(listener, tree)
-    print(listener.new_map.rooms)
-    print(listener.new_map.passages)
     listener.new_map.position_rooms()
     listener.new_map.graph().view()
     for room_name in listener.new_map.rooms:
         room = listener.new_map.rooms[room_name]
-        print(str(room_name) + " -> " + str(room.position))
