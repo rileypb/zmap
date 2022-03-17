@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QGraphicsScene
+    QApplication, QMainWindow, QGraphicsScene, QFileDialog
 )
 
 from PyQt5.QtCore import ( 
@@ -12,7 +12,10 @@ from PyQt5 import uic
 from compiler import Compiler
 
 DEBUG = True
-debug_text = """[Courtyard]d<->[Winding Stair]
+debug_text = \
+"""[Courtyard]sw-->?
+[Courtyard]e-->*(Special)
+[Courtyard]se-->*(Special)
 [Plain Hall]s<->[Courtyard]
 [Plain Hall]n<->[Rec Area]
 [Plain Hall]ne<->[Rec Corridor]
@@ -61,6 +64,7 @@ debug_text = """[Courtyard]d<->[Winding Stair]
 [Small Office]w<->[Large Office]
 [Booth 1]s<->[Conference Room]
 [Conference Room]s<->[Rec Area]
+[Conference Room]nw-->?
 """
 
 scene = None
@@ -71,7 +75,19 @@ def compile(*args):
     scene.clear()
     zmap_compiler.compile(win.plainTextEdit.toPlainText(), scene)
 
+def save_zmap(*args):
+    options = QFileDialog.Options()
+    filename, _ = QFileDialog.getSaveFileName(win, "Saving zmap file", "", "zmap Files (*.zmap);;All Files (*)", options=options)
+    with open(filename, 'w') as word_file:
+        word_file.write(win.plainTextEdit.toPlainText())
 
+def open_zmap(*args):
+    options = QFileDialog.Options()
+    filename, _ = QFileDialog.getOpenFileName(win, "Saving zmap file", "", "zmap Files (*.zmap);;All Files (*)", options=options)
+    with open(filename, 'r') as word_file:
+        mapstring = word_file.read()
+        win.plainTextEdit.setPlainText(mapstring)
+        compile()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -85,8 +101,9 @@ if __name__ == '__main__':
     win.splitter.setSizes([200, 400])
 
     scene = QGraphicsScene()
-    scene.addText("Hello, World!")
     win.graphicsView.setScene(scene)
     win.actionCompile.triggered.connect(compile)
+    win.actionSave.triggered.connect(save_zmap)
+    win.actionOpen.triggered.connect(open_zmap)
 
     app.exec()

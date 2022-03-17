@@ -13,25 +13,25 @@ def opposite(direction):
 
 def get_x_change(direction):
     if 'e' in direction:
-        return 1 + 0.05*random.random() - 0.025
+        return 1
     if 'w' in direction:
-        return -1 + 0.05*random.random() - 0.025
+        return -1
     if 'd' in direction:
-        return -1 + 0.05*random.random() - 0.025
+        return -1
     if 'u' in direction:
-        return 1 + 0.05*random.random() - 0.025
+        return 1
     return 0
 
 
 def get_y_change(direction):
     if 'n' in direction:
-        return 1 + 0.05*random.random() - 0.025
+        return 1
     if 's' in direction:
-        return -1 + 0.05*random.random() - 0.025
+        return -1
     if 'd' in direction:
-        return -1 + 0.05*random.random() - 0.025
+        return -1
     if 'u' in direction:
-        return 1 + 0.05*random.random() - 0.025
+        return 1
     return 0
 
 scale_by_modifier = { '<': 0.5, '>': 2.0 }
@@ -46,6 +46,8 @@ def calculate_position_for(room):
             direction = passage.direction if passage.to_room == room else opposite(passage.direction)
             opposite_position = opposite_room.position
             scale = scale_by_modifier[passage.modifier] if passage.modifier else 1
+            if passage.to_room.subtype == 'Unknown':
+                scale = 0.5
             new_position = (opposite_position[0] + scale*get_x_change(direction), opposite_position[1] + scale*get_y_change(direction))
             cx += new_position[0]
             cy += new_position[1]
@@ -109,6 +111,8 @@ class Map:
         self.passages.append(from_passage)
 
     def position_rooms(self):
+        if not self.first_room:
+            return
         rooms_by_position = {}
         current_node = self.first_room
         current_node.position = (0, 0)

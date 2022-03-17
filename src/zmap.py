@@ -1,51 +1,21 @@
-from tkinter import *
-from tkinter import ttk
+import sys
+
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QGraphicsScene, QFileDialog
+)
+
+from PyQt5.QtCore import ( 
+    QRectF 
+)
+
+from PyQt5 import uic
 from compiler import Compiler
 
 DEBUG = True
-
-zmap_compiler = Compiler()
-text = None
-canvas = None
-
-def get_text():
-    return text.get("1.0", END)
-
-
-def setup():
-    global text
-    global canvas
-    root = Tk()
-    root.geometry('1200x600')
-
-    style = ttk.Style()
-    style.configure("Horizontal.TScrollbar", foreground="red", background="white")
-
-    container = ttk.Frame(root, width=4)
-    container.pack(fill=BOTH, expand=1)
-
-    text = Text(container, width=60)
-    text.pack(fill=BOTH, expand=0, side=LEFT)
-
-    canvas_container = ttk.Frame(container, width=60)
-    canvas_container.pack(fill=BOTH, expand=1, side=RIGHT)
-    
-    canvas = Canvas(canvas_container, width=4)
-    scrollbar_x = ttk.Scrollbar(canvas_container, orient="horizontal", command=canvas.xview)
-    scrollbar_y = ttk.Scrollbar(canvas_container, orient="vertical", command=canvas.yview)
-    scrollable_frame = ttk.Frame(canvas)
-    scrollable_frame.bind(
-        "<Configure>",
-        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-    )
-    canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar_y.set)
-    canvas.configure(xscrollcommand=scrollbar_x.set)
-    canvas.pack(side=LEFT, fill=BOTH, expand=1)
-    scrollbar_x.pack(side=BOTTOM, fill=X)
-    scrollbar_y.pack(side=RIGHT, fill=Y)
-    if DEBUG:
-        text.insert(1.0, """[Courtyard]d<->[Winding Stair]
+debug_text = \
+"""[Courtyard]sw-->?
+[Courtyard]e-->*(Special)
+[Courtyard]se-->*(Special)
 [Plain Hall]s<->[Courtyard]
 [Plain Hall]n<->[Rec Area]
 [Plain Hall]ne<->[Rec Corridor]
@@ -94,33 +64,50 @@ def setup():
 [Small Office]w<->[Large Office]
 [Booth 1]s<->[Conference Room]
 [Conference Room]s<->[Rec Area]
-""")
-    return root
+[Conference Room]nw-->?
+"""
 
+scene = None
+win = None
+zmap_compiler = Compiler()
 
-def compile(event):
-    if event.state == 4: # control
-        canvas.delete("all")
-        zmap_compiler.compile(get_text(), canvas)
+def compile(*args):
+    scene.clear()
+    zmap_compiler.compile(win.plainTextEdit.toPlainText(), scene)
 
+def save_zmap(*args):
+    options = QFileDialog.Options()
+    filename, _ = QFileDialog.getSaveFileName(win, "Saving zmap file", "", "zmap Files (*.zmap);;All Files (*)", options=options)
+    if filename:
+        with open(filename, 'w') as word_file:
+            word_file.write(win.plainTextEdit.toPlainText())
 
-def save(event):
-    if event.state == 4: # control
-        pass
-
-
-def load(event):
-    if event.state == 4: # control
-        pass
-
+def open_zmap(*args):
+    options = QFileDialog.Options()
+    filename, _ = QFileDialog.getOpenFileName(win, "Saving zmap file", "", "zmap Files (*.zmap);;All Files (*)", options=options)
+    if filename:
+        with open(filename, 'r') as word_file:
+            mapstring = word_file.read()
+            win.plainTextEdit.setPlainText(mapstring)
+            compile()
 
 if __name__ == '__main__':
-    print("Welcome to zmap!")
+    app = QApplication(sys.argv)
+    app.setApplicationName("zmap")
+    app.setApplicationDisplayName("zmap")
+    win = QMainWindow()
+    win.setWindowTitle("zmap")
+    win.show()
+    uic.loadUi('zmap.ui', win)
+    if DEBUG:
+        win.plainTextEdit.setPlainText("")
 
-    root = setup()
+    win.splitter.setSizes([200, 400])
 
-    root.bind('k', lambda event: compile(event))
-    root.bind('s', lambda event: save(event))
-    root.bind('l', lambda event: load(event))
+    scene = QGraphicsScene()
+    win.graphicsView.setScene(scene)
+    win.actionCompile.triggered.connect(compile)
+    win.actionSave.triggered.connect(save_zmap)
+    win.actionOpen.triggered.connect(open_zmap)
 
-    root.mainloop()
+    app.exec()

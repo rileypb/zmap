@@ -46,6 +46,8 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#passage.
     def exitPassage(self, ctx:zmapParser.PassageContext):
+        if not ctx.room():
+            return
         room1id = ctx.room()[0].name().getText()
         room1 = self.new_map.rooms[room1id]
         if ctx.unknown():
