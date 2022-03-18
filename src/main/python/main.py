@@ -1,5 +1,7 @@
 import sys
 
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
+
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QGraphicsScene, QFileDialog
 )
@@ -92,13 +94,14 @@ def open_zmap(*args):
             compile()
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app.setApplicationName("zmap")
-    app.setApplicationDisplayName("zmap")
+    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
     win = QMainWindow()
     win.setWindowTitle("zmap")
     win.show()
-    uic.loadUi('zmap.ui', win)
+
+    rsrc = appctxt.get_resource('zmap.ui')
+    print(rsrc)
+    uic.loadUi(rsrc, win)
     if DEBUG:
         win.plainTextEdit.setPlainText("")
 
@@ -110,4 +113,5 @@ if __name__ == '__main__':
     win.actionSave.triggered.connect(save_zmap)
     win.actionOpen.triggered.connect(open_zmap)
 
-    app.exec()
+    exit_code = appctxt.app.exec()      # 2. Invoke appctxt.app.exec()
+    sys.exit(exit_code)
