@@ -6,7 +6,16 @@ from map import *
 }
 
 parse
-    : ifmap EOF;
+    : ifmaps EOF
+    ;
+
+ifmaps
+    : ifmapblock+
+    ;
+
+ifmapblock
+    : name LBRACE ifmap RBRACE (NL+ EOF? | EOF)
+    ;
 
 ifmap
     : (passage | comment | NL)+
@@ -28,6 +37,7 @@ room
 
 modifier
     : CLOSE
+    | FAR
     ;
 
 
@@ -108,6 +118,13 @@ NAME
     : ALPHA (ALPHANUM)*
     ;
 
+LBRACE
+    : '{'
+    ;
+
+RBRACE
+    : '}'
+    ;
 
 QUESTION
     : '?'
@@ -193,6 +210,10 @@ D
     
 CLOSE
     : '<'
+    ;
+
+FAR
+    : '>'
     ;
 
 fragment ALPHA

@@ -1,4 +1,4 @@
-import sys
+import sys, os
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 )
 
 from PyQt5.QtCore import ( 
-    QRectF 
+    QRectF, QSettings
 )
 
 from PyQt5 import uic
@@ -69,29 +69,46 @@ debug_text = \
 [Conference Room]nw-->?
 """
 
+settings = None
 scene = None
 win = None
 zmap_compiler = Compiler()
 
 def compile(*args):
     scene.clear()
-    zmap_compiler.compile(win.plainTextEdit.toPlainText(), scene)
+    map_names = zmap_compiler.compile(win.plainTextEdit.toPlainText())
+    current_rendered_map = win.graphChooser.currentText()
+    win.graphChooser.clear()
+    win.graphChooser.addItems(map_names)
+    if current_rendered_map in map_names:
+        win.graphChooser.setCurrentIndex(map_names.index(current_rendered_map))
+
+def display(*args):    
+    scene.clear()
+    zmap_compiler.display(win.graphChooser.currentText(), scene)        
 
 def save_zmap(*args):
+    filedir = settings.value("file/dir", os.path.expanduser("~"))
     options = QFileDialog.Options()
-    filename, _ = QFileDialog.getSaveFileName(win, "Saving zmap file", "", "zmap Files (*.zmap);;All Files (*)", options=options)
+    filename, _ = QFileDialog.getSaveFileName(win, "Saving zmap file", filedir, "zmap Files (*.zmap);;All Files (*)", options=options)
     if filename:
+        dirname = os.path.dirname(filename)
+        settings.setValue("file/dir", dirname)
         with open(filename, 'w') as word_file:
             word_file.write(win.plainTextEdit.toPlainText())
 
 def open_zmap(*args):
+    filedir = settings.value("file/dir", os.path.expanduser("~"))
     options = QFileDialog.Options()
-    filename, _ = QFileDialog.getOpenFileName(win, "Saving zmap file", "", "zmap Files (*.zmap);;All Files (*)", options=options)
+    filename, _ = QFileDialog.getOpenFileName(win, "Opening zmap file", filedir, "zmap Files (*.zmap);;All Files (*)", options=options)
     if filename:
+        dirname = os.path.dirname(filename)
+        settings.setValue("file/dir", dirname)
         with open(filename, 'r') as word_file:
             mapstring = word_file.read()
             win.plainTextEdit.setPlainText(mapstring)
             compile()
+
 
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
@@ -101,6 +118,9 @@ if __name__ == '__main__':
 
     rsrc = appctxt.get_resource('zmap.ui')
     print(rsrc)
+
+    settings = QSettings("Brainfreeze", "zmap")
+    
     uic.loadUi(rsrc, win)
     if DEBUG:
         win.plainTextEdit.setPlainText("")
@@ -113,5 +133,8 @@ if __name__ == '__main__':
     win.actionSave.triggered.connect(save_zmap)
     win.actionOpen.triggered.connect(open_zmap)
 
+    win.graphChooser.currentIndexChanged.connect(display)
+
     exit_code = appctxt.app.exec()      # 2. Invoke appctxt.app.exec()
+    settings.sync()
     sys.exit(exit_code)

@@ -19,7 +19,7 @@ def opposite(direction):
 class zmapListenerImpl(ParseTreeListener):
 
     def __init__(self):
-        self.new_map = Map()
+        self.new_maps = {}
 
     # Enter a parse tree produced by zmapParser#parse.
     def enterParse(self, ctx:zmapParser.ParseContext):
@@ -27,6 +27,26 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#parse.
     def exitParse(self, ctx:zmapParser.ParseContext):
+        pass
+
+
+    # Enter a parse tree produced by zmapParser#ifmaps.
+    def enterIfmaps(self, ctx:zmapParser.IfmapsContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#ifmaps.
+    def exitIfmaps(self, ctx:zmapParser.IfmapsContext):
+        pass
+
+
+    # Enter a parse tree produced by zmapParser#ifmapblock.
+    def enterIfmapblock(self, ctx:zmapParser.IfmapblockContext):
+        name = ctx.name().getText()
+        self.new_map = Map()
+        self.new_maps[name] = self.new_map
+
+    # Exit a parse tree produced by zmapParser#ifmapblock.
+    def exitIfmapblock(self, ctx:zmapParser.IfmapblockContext):
         pass
 
 
@@ -129,6 +149,31 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#directed_arrow.
     def exitDirected_arrow(self, ctx:zmapParser.Directed_arrowContext):
+        pass
+    # Enter a parse tree produced by zmapParser#larrow.
+    def enterLarrow(self, ctx:zmapParser.LarrowContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#larrow.
+    def exitLarrow(self, ctx:zmapParser.LarrowContext):
+        pass
+
+
+    # Enter a parse tree produced by zmapParser#rarrow.
+    def enterRarrow(self, ctx:zmapParser.RarrowContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#rarrow.
+    def exitRarrow(self, ctx:zmapParser.RarrowContext):
+        pass
+
+
+    # Enter a parse tree produced by zmapParser#barrow.
+    def enterBarrow(self, ctx:zmapParser.BarrowContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#barrow.
+    def exitBarrow(self, ctx:zmapParser.BarrowContext):
         pass
 
 

@@ -121,20 +121,26 @@ def add_arrowhead(scene, to_point, from_point):
 
 
 class Compiler:
-    def compile(self, source, scene):
+    def compile(self, source):
         input_stream = InputStream(source)
         lexer = zmapLexer(input_stream)
         stream = CommonTokenStream(lexer)
         parser = zmapParser(stream)
         tree = parser.parse()
-        listener = zmapListenerImpl()
+        self.listener = zmapListenerImpl()
         walker = ParseTreeWalker()
-        walker.walk(listener, tree)
-        listener.new_map.position_rooms()
+        walker.walk(self.listener, tree)
+        return list(self.listener.new_maps.keys())
+
+    def display(self, map_name, scene):
+        if not map_name:
+            return
+        map = self.listener.new_maps[map_name]
+        map.position_rooms()
         
         room_to_rect = {}
 
-        for room in listener.new_map.rooms.values():
+        for room in map.rooms.values():
             x = 200+150*room.position[0]
             y = 200+150*room.position[1]
             text = scene.addText(room.label)
@@ -164,7 +170,7 @@ class Compiler:
             #     scene.addPolygon(polygon)
 
         pairs = {}
-        for passage in listener.new_map.passages:
+        for passage in map.passages:
             from_room = passage.from_room
             to_room = passage.to_room
             if (to_room, from_room) in pairs:

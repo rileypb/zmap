@@ -1,4 +1,4 @@
-# Generated from /Users/rileypb/dev/zmap/src/zmap.g4 by ANTLR 4.9.3
+# Generated from /Users/rileypb/dev/zmap/src/main/python/zmap.g4 by ANTLR 4.9.3
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .zmapParser import zmapParser
@@ -17,6 +17,24 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#parse.
     def exitParse(self, ctx:zmapParser.ParseContext):
+        pass
+
+
+    # Enter a parse tree produced by zmapParser#ifmaps.
+    def enterIfmaps(self, ctx:zmapParser.IfmapsContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#ifmaps.
+    def exitIfmaps(self, ctx:zmapParser.IfmapsContext):
+        pass
+
+
+    # Enter a parse tree produced by zmapParser#ifmapblock.
+    def enterIfmapblock(self, ctx:zmapParser.IfmapblockContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#ifmapblock.
+    def exitIfmapblock(self, ctx:zmapParser.IfmapblockContext):
         pass
 
 
