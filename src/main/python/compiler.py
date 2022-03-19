@@ -174,29 +174,20 @@ class Compiler:
             from_room = passage.from_room
             to_room = passage.to_room
             if (to_room, from_room) in pairs:
-                print("pair")
                 current = pairs[(to_room, from_room)]
-                pairs[(to_room, from_room)] = (current, passage)
+                current.append(passage)
+            elif (from_room, to_room) in pairs:
+                current = pairs[(from_room, to_room)]
+                current.append(passage)
             else:
-                pairs[(from_room, to_room)] = passage
+                pairs[(from_room, to_room)] = [passage]
         
-        for obj in pairs.values():
-            if isinstance(obj, Passage):
-                from_room = obj.from_room
-                to_room = obj.to_room
-                from_direction = obj.direction
-                to_direction = opposite(obj.direction)
-                from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
-                to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
-                line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
-                if from_direction == 'u' or from_direction == 'd':
-                    line.setPen(DASH_PEN)
-                add_arrowhead(scene, to_point, from_point)
-            else:
-                from_room = obj[0].from_room
-                to_room = obj[1].from_room
-                from_direction = obj[0].direction
-                to_direction = obj[1].direction
+        for passage in map.passages:
+            if passage.two_way:
+                from_room = passage.from_room
+                to_room = passage.to_room
+                from_direction = passage.direction
+                to_direction = passage.back_direction
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
                 line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
@@ -204,6 +195,17 @@ class Compiler:
                     line.setPen(DASH_PEN)
                 add_arrowhead(scene, to_point, from_point)
                 add_arrowhead(scene, from_point, to_point)
+            else:
+                from_room = passage.from_room
+                to_room = passage.to_room
+                from_direction = passage.direction
+                to_direction = opposite(passage.direction)
+                from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
+                to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
+                line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
+                if from_direction == 'u' or from_direction == 'd':
+                    line.setPen(DASH_PEN)
+                add_arrowhead(scene, to_point, from_point)
 
                     
 

@@ -82,12 +82,10 @@ class zmapListenerImpl(ParseTreeListener):
         if ctx.directed_arrow().larrow():
             print("left")
             direction = ctx.directed_arrow().left_direction().getText()
-            print(direction)
             self.new_map.add_passage(room1, direction, room2, modifier=modifier)
         elif ctx.directed_arrow().rarrow():
             print("right")
             direction = ctx.directed_arrow().right_direction().getText()
-            print(direction)
             self.new_map.add_passage(room2, direction, room1, modifier=modifier)
         else: # barrow
             print("both")
@@ -100,8 +98,7 @@ class zmapListenerImpl(ParseTreeListener):
             if not direction2:
                 direction2 = opposite(direction1)
             print(direction1, direction2)
-            self.new_map.add_passage(room1, direction1, room2, modifier=modifier)
-            self.new_map.add_passage(room2, direction2, room1, modifier=modifier)
+            self.new_map.add_passage(room1, direction1, to_room=room2, back_direction=direction2, modifier=modifier, two_way=True)
 
 
 

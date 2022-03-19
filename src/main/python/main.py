@@ -74,6 +74,8 @@ scene = None
 win = None
 zmap_compiler = Compiler()
 
+current_filename = None
+
 def compile(*args):
     scene.clear()
     map_names = zmap_compiler.compile(win.plainTextEdit.toPlainText())
@@ -88,16 +90,21 @@ def display(*args):
     zmap_compiler.display(win.graphChooser.currentText(), scene)        
 
 def save_zmap(*args):
-    filedir = settings.value("file/dir", os.path.expanduser("~"))
-    options = QFileDialog.Options()
-    filename, _ = QFileDialog.getSaveFileName(win, "Saving zmap file", filedir, "zmap Files (*.zmap);;All Files (*)", options=options)
-    if filename:
-        dirname = os.path.dirname(filename)
-        settings.setValue("file/dir", dirname)
-        with open(filename, 'w') as word_file:
+    if current_filename:
+        with open(current_filename, 'w') as word_file:
             word_file.write(win.plainTextEdit.toPlainText())
+    else:
+        filedir = settings.value("file/dir", os.path.expanduser("~"))
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getSaveFileName(win, "Saving zmap file", filedir, "zmap Files (*.zmap);;All Files (*)", options=options)
+        if filename:
+            dirname = os.path.dirname(filename)
+            settings.setValue("file/dir", dirname)
+            with open(filename, 'w') as word_file:
+                word_file.write(win.plainTextEdit.toPlainText())
 
 def open_zmap(*args):
+    global current_filename
     filedir = settings.value("file/dir", os.path.expanduser("~"))
     options = QFileDialog.Options()
     filename, _ = QFileDialog.getOpenFileName(win, "Opening zmap file", filedir, "zmap Files (*.zmap);;All Files (*)", options=options)
@@ -108,6 +115,7 @@ def open_zmap(*args):
             mapstring = word_file.read()
             win.plainTextEdit.setPlainText(mapstring)
             compile()
+            current_filename = filename
 
 
 if __name__ == '__main__':

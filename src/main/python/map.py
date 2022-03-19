@@ -52,11 +52,19 @@ def calculate_position_for(room):
             cx += new_position[0]
             cy += new_position[1]
             count += 1
+
+            if not passage.to_room.subtype:
+                opposite_direction = passage.back_direction if passage.from_room == room else opposite(passage.back_direction)
+                new_position = (opposite_position[0] + scale * get_x_change(opposite_direction), opposite_position[1] + scale * get_y_change(opposite_direction))
+                cx += new_position[0]
+                cy += new_position[1]
+                count += 1
+
     room.position = (cx / count, cy / count)
 
 
 class Passage:
-    def __init__(self, from_room, direction, to_room=None, modifier=None) -> None:
+    def __init__(self, from_room, direction, to_room=None, back_direction=None, modifier=None, two_way=False) -> None:
         self.from_room = from_room
         self.direction = direction
         self.to_room = to_room
@@ -64,6 +72,11 @@ class Passage:
         if to_room:
             to_room.passages.append(self)
         self.modifier = modifier
+        self.two_way = two_way
+        if back_direction:
+            self.back_direction = back_direction
+        else:
+            self.back_direction = opposite(direction)
 
     def __str__(self):
         if self.to_room:
@@ -106,8 +119,8 @@ class Map:
             if not self.first_room:
                 self.first_room = room
 
-    def add_passage(self, from_room, from_dir, to_room, modifier=None):
-        from_passage = Passage(from_room, from_dir, to_room, modifier=modifier)
+    def add_passage(self, from_room, from_dir, to_room=None, back_direction=None, modifier=None, two_way=False):
+        from_passage = Passage(from_room, from_dir, to_room=to_room, back_direction=back_direction, modifier=modifier, two_way=two_way)
         self.passages.append(from_passage)
 
     def position_rooms(self):
