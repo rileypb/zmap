@@ -4,7 +4,7 @@
  zmap is an easy, text-driven mapping application for interactive fiction. Maps are input using a simple domain-specific language.
  
  ## zmap code
- Here's how to input a map: (if you want, have a look at the [Antlr grammar](https://github.com/rileypb/zmap/blob/main/src/main/python/zmap.g4).
+ Here's how to input a map: (if you want, have a look at the [Antlr grammar](https://github.com/rileypb/zmap/blob/main/src/main/python/zmap.g4).)
  
  A single zmap file can contain multiple maps. A map is indicated by a name followed by `{ ... }` containing the locations and connections on the map.
  
@@ -37,7 +37,7 @@ house {
  
  The right side of a right-pointing one-way arrow may indicate an unknown location `([Kitchen]u-->?)`, or a special feature: `[Living Room]w-->*(Front Door)`. Special features are good for transitions between areas, for example.
  
- There are two modifiers which may be appended to a connection: `<` and `>`, which indicate shorter line or longer line on the map, respectively.
+ There are two modifiers which may be appended to a connection: `<` and `>`, which indicate a shorter or longer line on the map, respectively.
  
- 
+ ![Outside the House](https://github.com/rileypb/zmap/blob/main/example_map.png)
  
