@@ -75,28 +75,8 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(center_x - room_rect.width() / 2 * ELLIPSE_SCALE, center_y - room_rect.height() / 2 * ELLIPSE_SCALE)
         else: 
             raise RuntimeError("I don't understand direction: " + str(direction))
-    # elif subtype == 'Special':
-    #     center_x = room_rect.x() + room_rect.width() / 2
-    #     center_y = room_rect.y() + room_rect.height() / 2
-    #     if direction == 'n' or direction == 'u':
-    #         return QPointF(room_rect.x() + room_rect.width() / 2, room_rect.y())
-    #     elif direction == 'ne':
-    #         return QPointF(center_x + room_rect.width() / 4, center_y - room_rect.height() / 4)
-    #     elif direction == 'e':
-    #         return QPointF(room_rect.x() + room_rect.width(), room_rect.y() + room_rect.height() / 2)
-    #     elif direction == 'se':
-    #         return QPointF(center_x + room_rect.width() / 4, center_y + room_rect.height() / 4)
-    #     elif direction == 's' or direction == 'd':
-    #         return QPointF(room_rect.x() + room_rect.width() / 2, room_rect.y() + room_rect.height())
-    #     elif direction == 'sw':
-    #         return QPointF(center_x - room_rect.width() / 4, center_y + room_rect.height() / 4)
-    #     elif direction == 'w':
-    #         return QPointF(room_rect.x(), room_rect.y() + room_rect.height() / 2)
-    #     elif direction == 'nw':
-    #         return QPointF(center_x - room_rect.width() / 4, center_y - room_rect.height() / 4)
-    #     else: 
-    #         raise RuntimeError("I don't understand direction: " + str(direction))
         
+
 def add_arrowhead(scene, to_point, from_point):
     point1 = to_point
     dx = from_point.x() - to_point.x()
@@ -158,16 +138,6 @@ class Compiler:
                 scene.addRect(room.bounding_rect)
             elif room.subtype:
                 scene.addEllipse(room.bounding_rect)
-            # elif room.subtype == "Special":
-            #     polygon = QPolygonF()
-            #     tbw = max(50, room.bounding_rect.width())
-            #     x_ = room.bounding_rect.x()
-            #     y_ = room.bounding_rect.y()
-            #     polygon.append(QPointF(x_ + tbw / 2, y_))
-            #     polygon.append(QPointF(x_ + tbw, y_ + room.bounding_rect.height() / 2))
-            #     polygon.append(QPointF(x_ + tbw / 2, y_ + room.bounding_rect.height()))
-            #     polygon.append(QPointF(x_, y_ + room.bounding_rect.height() / 2))
-            #     scene.addPolygon(polygon)
 
         pairs = {}
         for passage in map.passages:

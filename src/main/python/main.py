@@ -3,7 +3,7 @@ import sys, os
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QGraphicsScene, QFileDialog
+    QApplication, QMainWindow, QGraphicsScene, QFileDialog, QMessageBox
 )
 
 from PyQt5.QtCore import ( 
@@ -19,6 +19,7 @@ class ZApp:
         self.appctxt = ApplicationContext()
         self.current_filename = None
         self.zmap_compiler = Compiler()
+        self.original_text = ""
 
     def setup(self):
         self.win = QMainWindow()
@@ -35,7 +36,9 @@ class ZApp:
         self.scene = QGraphicsScene()
         self.win.graphicsView.setScene(self.scene)
         self.win.actionCompile.triggered.connect(self.compile)
+        self.win.actionNew.triggered.connect(self.new_zmap)
         self.win.actionSave.triggered.connect(self.save_zmap)
+        self.win.actionSave_As.triggered.connect(self.save_as)
         self.win.actionOpen.triggered.connect(self.open_zmap)
 
         self.win.graphChooser.currentIndexChanged.connect(self.display)
@@ -58,10 +61,30 @@ class ZApp:
         self.scene.clear()
         self.zmap_compiler.display(self.win.graphChooser.currentText(), self.scene)        
 
-    def save_zmap(self, *args):
-        if self.current_filename:
+    def confirm_destructive_action(self, action):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText(f"Continue {action}?")
+        msg.setInformativeText("You will lose your current progress")
+        msg.setWindowTitle("Continue?")
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        return msg.exec_()
+
+    def new_zmap(self, *args):
+        if self.win.plainTextEdit.toPlainText() != self.original_text:
+            confirmation = self.confirm_destructive_action("creating new file")
+            cancel = confirmation & QMessageBox.Cancel
+            if cancel:
+                return
+        self.win.plainTextEdit.setPlainText("")
+        self.original_text = ""
+        self.current_filename = None
+
+    def save_zmap(self, *args, do_save_as=False):
+        if self.current_filename and not do_save_as:
             with open(self.current_filename, 'w') as word_file:
                 word_file.write(self.win.plainTextEdit.toPlainText())
+            self.original_text = self.win.plainTextEdit.toPlainText()
         else:
             filedir = self.settings.value("file/dir", os.path.expanduser("~"))
             options = QFileDialog.Options()
@@ -71,8 +94,18 @@ class ZApp:
                 self.settings.setValue("file/dir", dirname)
                 with open(filename, 'w') as word_file:
                     word_file.write(self.win.plainTextEdit.toPlainText())
+                self.current_filename = filename
+                self.original_text = self.win.plainTextEdit.toPlainText()
+
+    def save_as(self, *args) :
+        self.save_zmap(do_save_as=True)
 
     def open_zmap(self, *args):
+        if self.win.plainTextEdit.toPlainText() != self.original_text:
+            confirmation = self.confirm_destructive_action("opening file")
+            cancel = confirmation & QMessageBox.Cancel
+            if cancel:
+                return
         filedir = self.settings.value("file/dir", os.path.expanduser("~"))
         options = QFileDialog.Options()
         filename, _ = QFileDialog.getOpenFileName(self.win, "Opening zmap file", filedir, "zmap Files (*.zmap);;All Files (*)", options=options)
@@ -84,9 +117,11 @@ class ZApp:
                 self.win.plainTextEdit.setPlainText(mapstring)
                 self.compile()
                 self.current_filename = filename
+                self.original_text = self.win.plainTextEdit.toPlainText()
 
 
 if __name__ == '__main__':
+    import menu_icons
     zapp = ZApp()
     zapp.setup()
     zapp.run()
