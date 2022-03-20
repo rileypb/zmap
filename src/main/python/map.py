@@ -1,8 +1,6 @@
-import graphviz
-import random
-
-X_SCALE = 3
-Y_SCALE = 3
+"""
+Map, Passage and Room models.
+"""
 
 opposites = { 'n': 's', 'ne': 'sw', 'e': 'w', 'se': 'nw', 's': 'n', 'sw': 'ne',
               'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u'}
