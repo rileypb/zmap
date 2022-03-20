@@ -1,5 +1,9 @@
 # zmap
  An interactive fiction mapper
+ 
+ [v1.0.0 for Mac](https://github.com/rileypb/zmap/releases/download/v1.0.0/zmap.dmg)
+ 
+ __If anyone out there would be willing to package zmap for Windows and/or Linux, let me know at rileypb@gmail.com__
 
  zmap is an easy, text-driven mapping application for interactive fiction. Maps are input using a simple domain-specific language.
  
