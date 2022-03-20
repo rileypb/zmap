@@ -13,62 +13,6 @@ from PyQt5.QtCore import (
 from PyQt5 import uic
 from compiler import Compiler
 
-DEBUG = True
-debug_text = \
-"""[Courtyard]sw-->?
-[Courtyard]e-->*(Special)
-[Courtyard]se-->*(Special)
-[Plain Hall]s<->[Courtyard]
-[Plain Hall]n<->[Rec Area]
-[Plain Hall]ne<->[Rec Corridor]
-[Courtyard]w<->[West Wing]
-[Rec Area]e<->[Rec Corridor]
-[Rec Corridor]e<->[Mess Corridor]
-[Mess Corridor]s<->[Mess Hall]
-[Mess Hall]s<->[Kitchen]
-[Mess Corridor]n<->[Storage West]
-[Mess Corridor]e<->[Dorm Corridor]
-[Rec Corridor]n<->[Dorm B]<
-[Rec Corridor]s<->[Dorm A]<
-[Dorm A]s<->[SanFac A]<
-[Dorm B]n<->[SanFac B]<
-[Dorm Corridor]n<->[Dorm D]<
-[Dorm D]n<->[SanFac D]<
-[Dorm Corridor]s<->[Dorm C]<
-[Dorm C]s<->[SanFac C]<
-[Dorm Corridor]e<->[Corridor Junction]
-[Corridor Junction]n<->[Admin Corridor South]
-[Admin Corridor South]e<->[SanFac E]
-[Admin Corridor South]n<->[Admin Corridor]
-[Corridor Junction]s<->[Mech Corridor North]
-[Corridor Junction]e<->[Elevator Lobby]
-[Elevator Lobby]e<->[Booth 2]
-[Elevator Lobby]n<->[Upper Elevator]<
-[Elevator Lobby]s<->[Lower Elevator]<
-[Admin Corridor]n<->[Admin Corridor North]
-[Admin Corridor]w<->[Systems Monitors]
-[Mech Corridor North]e<->[Storage East]
-[Mech Corridor North]w<->ne[Physical Plant]
-[Mech Corridor North]s<->[Mech Corridor]
-[Physical Plant]se<->w[Mech Corridor]
-[Mech Corridor]e<->[Reactor Control]
-[Mech Corridor]s<->[Mech Corridor South]
-[Mech Corridor South]sw<->[Tool Room]
-[Tool Room]e<->[Machine Shop]
-[Mech Corridor South]s<->[Machine Shop]
-[Mech Corridor South]se<->[Robot Shop]
-[Machine Shop]e<->[Robot Shop]
-[Reactor Control]e<->[Reactor Elevator]<
-[Reactor Control]d-->?
-[Admin Corridor North]w<->[Small Office]
-[Admin Corridor North]n-->?
-[Admin Corridor North]e<->[Plan Room]
-[Small Office]w<->[Large Office]
-[Booth 1]s<->[Conference Room]
-[Conference Room]s<->[Rec Area]
-[Conference Room]nw-->?
-"""
-
 settings = None
 scene = None
 win = None
@@ -130,8 +74,6 @@ if __name__ == '__main__':
     settings = QSettings("Brainfreeze", "zmap")
     
     uic.loadUi(rsrc, win)
-    if DEBUG:
-        win.plainTextEdit.setPlainText("")
 
     win.splitter.setSizes([200, 400])
 
