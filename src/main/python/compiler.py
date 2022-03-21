@@ -2,6 +2,8 @@ from ctypes.wintypes import SMALL_RECT
 from io import StringIO
 import sys
 from antlr4 import *  
+from antlr4.error.ErrorListener import ErrorListener
+from antlr4.error.Errors import ParseCancellationException
 from zmapLexer import zmapLexer
 from zmapParser import zmapParser
 from zmapListenerImpl import zmapListenerImpl
@@ -100,12 +102,21 @@ def add_arrowhead(scene, to_point, from_point):
     scene.addPolygon(polygon, brush=ARROWHEAD_BRUSH)
 
 
+class ThrowingErrorListener(ErrorListener):
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        raise ParseCancellationException((line, column, msg))
+
+
 class Compiler:
     def compile(self, source):
         input_stream = InputStream(source)
         lexer = zmapLexer(input_stream)
+        lexer.removeErrorListeners()
+        lexer.addErrorListener(ThrowingErrorListener())
         stream = CommonTokenStream(lexer)
         parser = zmapParser(stream)
+        parser.removeErrorListeners()
+        parser.addErrorListener(ThrowingErrorListener())
         tree = parser.parse()
         self.listener = zmapListenerImpl()
         walker = ParseTreeWalker()
