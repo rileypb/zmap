@@ -2,6 +2,8 @@
 Map, Passage and Room models.
 """
 
+import random
+
 opposites = { 'n': 's', 'ne': 'sw', 'e': 'w', 'se': 'nw', 's': 'n', 'sw': 'ne',
               'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u'}
 
@@ -58,7 +60,7 @@ def calculate_position_for(room):
                 cy += new_position[1]
                 count += 1
 
-    room.position = (cx / count, cy / count)
+    room.position = (cx / max(1, count), cy / max(1, count))
 
 
 class Passage:
@@ -125,18 +127,25 @@ class Map:
         if not self.first_room:
             return
         rooms_by_position = {}
+        all_rooms = list(self.rooms.values())
         current_node = self.first_room
         current_node.position = (0, 0)
         frontier = [current_node]
-        while frontier:
-            current_node = frontier.pop(0)
-            for passage in current_node.passages:
-                next_room = passage.from_room if passage.to_room == current_node else passage.to_room
-                if not next_room or next_room.position:
-                    continue
-                frontier.append(next_room)
-                calculate_position_for(next_room)
-                rooms_by_position[next_room.position] = next_room
+        while all_rooms or frontier:
+            while frontier:
+                current_node = frontier.pop(0)
+                all_rooms.remove(current_node)
+                for passage in current_node.passages:
+                    next_room = passage.from_room if passage.to_room == current_node else passage.to_room
+                    if not next_room or next_room.position:
+                        continue
+                    frontier.append(next_room)
+                    calculate_position_for(next_room)
+                    rooms_by_position[next_room.position] = next_room
+            if all_rooms:
+                one_room = random.choice(all_rooms)
+                frontier.append(one_room)
+                one_room.position = (0, 0)
 
 
     
