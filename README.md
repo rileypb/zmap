@@ -5,7 +5,7 @@
  
  ## Releases
  
- [v1.0.0 for Mac](https://github.com/rileypb/zmap/releases/download/v1.0.0/zmap.dmg)
+ [v1.0.0 for Mac](https://github.com/rileypb/zmap/releases/download/v1.0.0/zmapv1.0.0a.dmg)
  
  __If anyone out there would be willing to package zmap for Windows and/or Linux, let me know at rileypb@gmail.com__
  
