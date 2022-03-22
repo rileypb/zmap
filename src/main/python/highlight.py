@@ -8,7 +8,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
 
     def highlight_line(self, line, fmt):
         if isinstance(line, int) and line >= 0 and isinstance(fmt, QTextCharFormat):
-            tb = self.document().findBlockByLineNumber(line)
+            tb = self.document().findBlockByNumber(line)
             self._highlight_lines[tb.blockNumber()] = fmt
             self.rehighlightBlock(tb)
 
@@ -20,7 +20,6 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         self.rehighlight()
 
     def highlightBlock(self, text):
-        line = self.currentBlock().firstLineNumber()
         fmt = self._highlight_lines.get(self.currentBlock().blockNumber())
         if fmt is not None:
             self.setFormat(0, len(text), fmt)
