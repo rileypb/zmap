@@ -59,7 +59,7 @@ class ZApp:
 
     def highlight_error(self, line):
         fmt = QTextCharFormat()
-        fmt.setBackground(QColor("red"))
+        fmt.setForeground(QColor("red"))
         self.highlighter.clear_highlight()
         self.highlighter.highlight_line(line-1, fmt)
         self.win.plainTextEdit.update();
