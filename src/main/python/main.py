@@ -9,9 +9,11 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import ( 
     QRectF, QSettings
 )
+from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat
 
 from PyQt5 import uic
 from compiler import Compiler
+from highlight import SyntaxHighlighter
 
 
 class ZApp:
@@ -43,19 +45,37 @@ class ZApp:
 
         self.win.graphChooser.currentIndexChanged.connect(self.display)
 
+        self.highlighter = SyntaxHighlighter(self.win.plainTextEdit.document())
+        self.win.plainTextEdit.document().contentsChange.connect(self.textChanged)
+
+    def textChanged(self, *args):
+        if self.highlighter and self.highlighter.is_highlighted():
+            self.highlighter.clear_highlight()
+
     def run(self):
         exit_code = self.appctxt.app.exec()      # 2. Invoke appctxt.app.exec()
         self.settings.sync()
         sys.exit(exit_code)
 
+    def highlight_error(self, line):
+        fmt = QTextCharFormat()
+        fmt.setBackground(QColor("red"))
+        self.highlighter.clear_highlight()
+        self.highlighter.highlight_line(line-1, fmt)
+        self.win.plainTextEdit.update();
+
     def compile(self, *args):
         self.scene.clear()
-        map_names = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
-        current_rendered_map = self.win.graphChooser.currentText()
-        self.win.graphChooser.clear()
-        self.win.graphChooser.addItems(map_names)
-        if current_rendered_map in map_names:
-            self.win.graphChooser.setCurrentIndex(map_names.index(current_rendered_map))
+        map_names, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
+        
+        if exc:
+            self.highlight_error(exc.args[0][0])
+        else:
+            current_rendered_map = self.win.graphChooser.currentText()
+            self.win.graphChooser.clear()
+            self.win.graphChooser.addItems(map_names)
+            if current_rendered_map in map_names:
+                self.win.graphChooser.setCurrentIndex(map_names.index(current_rendered_map))
 
     def display(self, *args):    
         self.scene.clear()

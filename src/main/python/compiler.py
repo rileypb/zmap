@@ -109,19 +109,22 @@ class ThrowingErrorListener(ErrorListener):
 
 class Compiler:
     def compile(self, source):
-        input_stream = InputStream(source)
-        lexer = zmapLexer(input_stream)
-        lexer.removeErrorListeners()
-        lexer.addErrorListener(ThrowingErrorListener())
-        stream = CommonTokenStream(lexer)
-        parser = zmapParser(stream)
-        parser.removeErrorListeners()
-        parser.addErrorListener(ThrowingErrorListener())
-        tree = parser.parse()
-        self.listener = zmapListenerImpl()
-        walker = ParseTreeWalker()
-        walker.walk(self.listener, tree)
-        return list(self.listener.new_maps.keys())
+        try:
+            input_stream = InputStream(source)
+            lexer = zmapLexer(input_stream)
+            lexer.removeErrorListeners()
+            lexer.addErrorListener(ThrowingErrorListener())
+            stream = CommonTokenStream(lexer)
+            parser = zmapParser(stream)
+            parser.removeErrorListeners()
+            parser.addErrorListener(ThrowingErrorListener())
+            tree = parser.parse()
+            self.listener = zmapListenerImpl()
+            walker = ParseTreeWalker()
+            walker.walk(self.listener, tree)
+            return (list(self.listener.new_maps.keys()), None)
+        except ParseCancellationException as pce:
+            return (None, pce)
 
     def display(self, map_name, scene):
         if not map_name:
