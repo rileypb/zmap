@@ -69,6 +69,7 @@ class ZApp:
         map_names, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
         
         if exc:
+            self.win.outputFrame.append(exc.args[0][2])
             self.highlight_error(exc.args[0][0])
         else:
             current_rendered_map = self.win.graphChooser.currentText()
