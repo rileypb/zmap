@@ -22,7 +22,7 @@ ifmap
     ;
 
 passage
-    : node directed_arrow (node | unknown) (modifier)? (NL | EOF)
+    : node directed_arrow node (modifier)? (NL | EOF)
     ; 
 
 comment
@@ -31,6 +31,7 @@ comment
 
 node
     : special? (room | freeRoom)
+    | unknown
     ;
 
 room

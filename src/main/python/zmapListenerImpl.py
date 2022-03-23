@@ -228,7 +228,9 @@ class zmapListenerImpl(ParseTreeListener):
     def enterUnknown(self, ctx:zmapParser.UnknownContext):
         self.subtype = "Unknown"
         self.ctxid = id(ctx)
-        print(self.subtype, self.ctxid)
+
+        room = self.new_map.add_room(id=self.ctxid, label='?', subtype=self.subtype, free=True)
+        self.room2 = room
         # self.new_map.add_room(id(ctx), subtype="Unknown")
 
     # Exit a parse tree produced by zmapParser#unknown.
