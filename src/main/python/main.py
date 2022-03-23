@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, datetime
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
@@ -69,9 +69,14 @@ class ZApp:
         map_names, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
         
         if exc:
-            self.win.outputFrame.append(exc.args[0][2])
+            now = datetime.datetime.now()
+            time = now.strftime("%H:%M:%S")
+            self.win.outputFrame.append(f'{time} {exc.args[0][2]}')
             self.highlight_error(exc.args[0][0])
         else:
+            now = datetime.datetime.now()
+            time = now.strftime("%H:%M:%S")
+            self.win.outputFrame.append(f'{time} compilation successful')
             current_rendered_map = self.win.graphChooser.currentText()
             self.win.graphChooser.clear()
             self.win.graphChooser.addItems(map_names)
