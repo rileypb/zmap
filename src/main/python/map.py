@@ -89,7 +89,7 @@ class Passage:
         return self.__str__()
 
 class Room:
-    def __init__(self, id, label, subtype=None) -> None:
+    def __init__(self, id, label, subtype=None, free=False) -> None:
         self.id = id
         if subtype == 'Unknown':
             label = '?'
@@ -99,6 +99,7 @@ class Room:
         self.subtype = subtype
         self.position = None
         self.passages = []
+        self.free = free
 
     def __str__(self):
         return f'[{self.label}]'
@@ -112,12 +113,14 @@ class Map:
         self.rooms = {}
         self.passages = []
 
-    def add_room(self, id, label=None, subtype=None):
+    def add_room(self, id, label=None, subtype=None, free=False):
         if id not in self.rooms.keys():
-            room = Room(id, label=label, subtype=subtype)
+            room = Room(id, label=label, subtype=subtype, free=free)
             self.rooms[id] = room
             if not self.first_room:
                 self.first_room = room
+            return room
+        return self.rooms[id]
 
     def add_passage(self, from_room, from_dir, to_room=None, back_direction=None, modifier=None, two_way=False):
         from_passage = Passage(from_room, from_dir, to_room=to_room, back_direction=back_direction, modifier=modifier, two_way=two_way)

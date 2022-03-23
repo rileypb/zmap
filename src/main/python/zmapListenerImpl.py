@@ -20,6 +20,7 @@ class zmapListenerImpl(ParseTreeListener):
 
     def __init__(self):
         self.new_maps = {}
+        self.subtype = None
 
     # Enter a parse tree produced by zmapParser#parse.
     def enterParse(self, ctx:zmapParser.ParseContext):
@@ -66,17 +67,11 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#passage.
     def exitPassage(self, ctx:zmapParser.PassageContext):
-        if not ctx.room():
+        if not ctx.node():
             return
-        room1id = ctx.room()[0].name().getText()
-        room1 = self.new_map.rooms[room1id]
-        if ctx.unknown():
-            room2id = id(ctx.unknown())
-        elif ctx.special():
-            room2id = id(ctx.special())
-        else:
-            room2id = ctx.room()[1].name().getText()
-        room2 = self.new_map.rooms[room2id]
+
+        room1 = self.room1
+        room2 = self.room2
         modifier_ = ctx.modifier()
         modifier = None if not modifier_ else modifier_.getText()
         if ctx.directed_arrow().larrow():
@@ -108,14 +103,44 @@ class zmapListenerImpl(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by zmapParser#node.
+    def enterNode(self, ctx:zmapParser.NodeContext):
+        self.subtype = None
+        self.ctxid = None
+
+    # Exit a parse tree produced by zmapParser#node.
+    def exitNode(self, ctx:zmapParser.NodeContext):
+        pass
+
+
     # Enter a parse tree produced by zmapParser#room.
     def enterRoom(self, ctx:zmapParser.RoomContext):
-        id = ctx.name().getText()
-        self.new_map.add_room(id=id, label=id)
+        pass
 
     # Exit a parse tree produced by zmapParser#room.
     def exitRoom(self, ctx:zmapParser.RoomContext):
+        id = ctx.name().getText()
+        name = ctx.name().getText()
+        room = self.new_map.add_room(id=id, label=name, subtype=self.subtype)
+        if not self.room1:
+            self.room1 = room
+        else:
+            self.room2 = room
+
+
+    # Enter a parse tree produced by zmapParser#freeRoom.
+    def enterFreeRoom(self, ctx:zmapParser.FreeRoomContext):
         pass
+
+    # Exit a parse tree produced by zmapParser#freeRoom.
+    def exitFreeRoom(self, ctx:zmapParser.FreeRoomContext):
+        id = ctx.name().getText()
+        name = ctx.name().getText()
+        room = self.new_map.add_room(id=id, label=name, subtype=self.subtype, free=True)
+        if not self.room1:
+            self.room1 = room
+        else:
+            self.room2 = room
 
 
     # Enter a parse tree produced by zmapParser#modifier.
@@ -143,6 +168,8 @@ class zmapListenerImpl(ParseTreeListener):
     # Exit a parse tree produced by zmapParser#directed_arrow.
     def exitDirected_arrow(self, ctx:zmapParser.Directed_arrowContext):
         pass
+
+
     # Enter a parse tree produced by zmapParser#larrow.
     def enterLarrow(self, ctx:zmapParser.LarrowContext):
         pass
@@ -199,20 +226,28 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Enter a parse tree produced by zmapParser#unknown.
     def enterUnknown(self, ctx:zmapParser.UnknownContext):
-        pass
+        self.subtype = "Unknown"
+        self.ctxid = id(ctx)
+        print(self.subtype, self.ctxid)
+        # self.new_map.add_room(id(ctx), subtype="Unknown")
 
     # Exit a parse tree produced by zmapParser#unknown.
     def exitUnknown(self, ctx:zmapParser.UnknownContext):
-        self.new_map.add_room(id(ctx), subtype="Unknown")
+        pass
 
 
     # Enter a parse tree produced by zmapParser#special.
     def enterSpecial(self, ctx:zmapParser.SpecialContext):
-        pass
+        self.subtype = "Special"
+        self.ctxid = id(ctx)
+        print("entering special: ", self.subtype, self.ctxid)
+        # node = ctx.node()
+        # room = node.room() or node.freeRoom()
+        # self.new_map.add_room(id(ctx), label=room.name().getText(), subtype="Special")
 
     # Exit a parse tree produced by zmapParser#special.
     def exitSpecial(self, ctx:zmapParser.SpecialContext):
-        self.new_map.add_room(id(ctx), label=ctx.name().getText(), subtype="Special")
+        pass
 
 
 

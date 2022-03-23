@@ -65,12 +65,30 @@ class zmapListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by zmapParser#node.
+    def enterNode(self, ctx:zmapParser.NodeContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#node.
+    def exitNode(self, ctx:zmapParser.NodeContext):
+        pass
+
+
     # Enter a parse tree produced by zmapParser#room.
     def enterRoom(self, ctx:zmapParser.RoomContext):
         pass
 
     # Exit a parse tree produced by zmapParser#room.
     def exitRoom(self, ctx:zmapParser.RoomContext):
+        pass
+
+
+    # Enter a parse tree produced by zmapParser#freeRoom.
+    def enterFreeRoom(self, ctx:zmapParser.FreeRoomContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#freeRoom.
+    def exitFreeRoom(self, ctx:zmapParser.FreeRoomContext):
         pass
 
 

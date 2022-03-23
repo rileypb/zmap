@@ -149,9 +149,9 @@ class Compiler:
             room.bounding_rect = QRectF(x - text_bounding_rect.width()/2, -y - text_bounding_rect.height()/2, max(50, text_bounding_rect.width()), text_bounding_rect.height())
             text.setPos(x - text_bounding_rect.width()/2, -y - text_bounding_rect.height()/2)
             if not room.subtype:
-                scene.addRect(room.bounding_rect)
+                room_to_rect[room] = scene.addRect(room.bounding_rect)
             elif room.subtype:
-                scene.addEllipse(room.bounding_rect)
+                room_to_rect[room] = scene.addEllipse(room.bounding_rect)
 
         pairs = {}
         for passage in map.passages:

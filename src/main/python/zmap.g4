@@ -22,18 +22,24 @@ ifmap
     ;
 
 passage
-    : room directed_arrow (room | unknown) (modifier)? (NL | EOF)
-    | room directed_arrow special (modifier)? (NL | EOF)
+    : node directed_arrow (node | unknown) (modifier)? (NL | EOF)
     ; 
 
 comment
     : '#' ~(NL)* (NL | EOF)
     ;
 
+node
+    : special? (room | freeRoom)
+    ;
+
 room
     : LBRACK name RBRACK
     ; 
-  
+
+freeRoom
+    : LPAREN name RPAREN
+    ;
 
 modifier
     : CLOSE
@@ -83,7 +89,7 @@ unknown
 
 
 special
-    : STAR LPAREN name RPAREN
+    : STAR
     ;
 
 
