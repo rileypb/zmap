@@ -37,11 +37,11 @@ house {
 [Living Room]d-->*(Cellar)
 }
  ```
- A location is indicated by square brackets; for example, `[West of House]`. 
+ A node with a fixed position on the screen is indicated by square brackets; for example, `[West of House]`. A node that should swing freely is indicated by parens: `(North of House)`.  
  
  An arrow pointing in one direction (`-->` or `<--`) indicates a one-way connection. A two-headed arrow (`<->`) indicates a two-way connection. An arrow is preceded by the direction of the connection (i.e., which way it leaves the originating location). For instance `e-->` indicates a one-way connection pointing east, `e<->` indicates a two-way passage leading east from the originating location and leading west from the target location. A two-way passage may indicate different directions on the two ends: `[West of House]n<->w[North of House]`.
  
- The right side of a right-pointing one-way arrow may indicate an unknown location `([Kitchen]u-->?)`, or a special feature: `[Living Room]w-->*(Front Door)`. Special features are good for transitions between areas, for example.
+ The right side of a right-pointing one-way arrow may indicate an unknown location `([Kitchen]u-->?)`, or a special feature: `[Living Room]w-->*[Front Door]`. Special features are good for transitions between areas, for example.
  
  There are two modifiers which may be appended to a connection: `<` and `>`, which indicate a shorter or longer line on the map, respectively.
  
