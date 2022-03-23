@@ -3,17 +3,19 @@ import sys, os, datetime
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QGraphicsScene, QFileDialog, QMessageBox
+    QMainWindow, QGraphicsScene, QFileDialog, QMessageBox
 )
 
 from PyQt5.QtCore import ( 
-    QRectF, QSettings
+    QSettings
 )
-from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat
+from PyQt5.QtGui import QColor, QTextCharFormat
 
 from PyQt5 import uic
 from compiler import Compiler
 from highlight import SyntaxHighlighter
+
+from graphdisplay import Layout
 
 
 class ZApp:
@@ -66,7 +68,7 @@ class ZApp:
 
     def compile(self, *args):
         self.scene.clear()
-        map_names, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
+        self.maps, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
         
         if exc:
             now = datetime.datetime.now()
@@ -79,13 +81,15 @@ class ZApp:
             self.win.outputFrame.append(f'{time} compilation successful')
             current_rendered_map = self.win.graphChooser.currentText()
             self.win.graphChooser.clear()
-            self.win.graphChooser.addItems(map_names)
-            if current_rendered_map in map_names:
-                self.win.graphChooser.setCurrentIndex(map_names.index(current_rendered_map))
+            self.win.graphChooser.addItems(self.maps.keys())
+            if current_rendered_map in self.maps.keys():
+                self.win.graphChooser.setCurrentIndex(self.maps.keys().index(current_rendered_map))
 
     def display(self, *args):    
         self.scene.clear()
-        self.zmap_compiler.display(self.win.graphChooser.currentText(), self.scene)        
+        layout = Layout()   
+        
+        layout.display(self.maps[self.win.graphChooser.currentText()], self.scene)   
 
     def confirm_destructive_action(self, action):
         msg = QMessageBox()
