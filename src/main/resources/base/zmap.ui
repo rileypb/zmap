@@ -128,6 +128,7 @@
    <addaction name="actionSave"/>
    <addaction name="actionSave_As"/>
    <addaction name="actionCompile"/>
+   <addaction name="actionOneStep"/>
    <addaction name="actionExport"/>
   </widget>
   <action name="actionOpen">
@@ -200,6 +201,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionOneStep">
+   <property name="text">
+    <string>OneStep</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

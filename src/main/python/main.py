@@ -3,11 +3,11 @@ import sys, os, datetime
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QGraphicsScene, QFileDialog, QMessageBox
+    QMainWindow, QGraphicsScene, QFileDialog, QMessageBox
 )
 
 from PyQt5.QtCore import ( 
-    QRectF, QSettings
+    QSettings
 )
 from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat
 
@@ -15,12 +15,18 @@ from PyQt5 import uic
 from compiler import Compiler
 from highlight import SyntaxHighlighter
 
+from display import Display
+from arrange import Arranger
+from layout import Layout
 
 class ZApp:
     def __init__(self):
         self.appctxt = ApplicationContext()
         self.current_filename = None
         self.zmap_compiler = Compiler()
+        self.display = Display()
+        self.arranger = Arranger()
+        self.layout = Layout()
         self.original_text = ""
 
     def setup(self):
@@ -42,11 +48,19 @@ class ZApp:
         self.win.actionSave.triggered.connect(self.save_zmap)
         self.win.actionSave_As.triggered.connect(self.save_as)
         self.win.actionOpen.triggered.connect(self.open_zmap)
+        self.win.actionOneStep.triggered.connect(self.do_layout)
 
-        self.win.graphChooser.currentIndexChanged.connect(self.display)
+        self.win.graphChooser.currentIndexChanged.connect(self.display_map)
 
         self.highlighter = SyntaxHighlighter(self.win.plainTextEdit.document())
         self.win.plainTextEdit.document().contentsChange.connect(self.textChanged)
+
+    def do_layout(self):
+        map = self.maps[self.win.graphChooser.currentText()]
+        
+        self.scene.clear()
+        self.layout.one_step(map)
+        self.display.display(map, self.scene)    
 
     def textChanged(self, *args):
         if self.highlighter and self.highlighter.is_highlighted():
@@ -66,7 +80,7 @@ class ZApp:
 
     def compile(self, *args):
         self.scene.clear()
-        map_names, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
+        self.maps, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
         
         if exc:
             now = datetime.datetime.now()
@@ -79,13 +93,25 @@ class ZApp:
             self.win.outputFrame.append(f'{time} compilation successful')
             current_rendered_map = self.win.graphChooser.currentText()
             self.win.graphChooser.clear()
+            map_names = list(self.maps.keys())
             self.win.graphChooser.addItems(map_names)
             if current_rendered_map in map_names:
                 self.win.graphChooser.setCurrentIndex(map_names.index(current_rendered_map))
 
-    def display(self, *args):    
+    def display_map(self, *args):    
+        if not self.win.graphChooser.currentText():
+            return
+        map = self.maps[self.win.graphChooser.currentText()]
+        if not map.arranged:
+            self.arranger.arrange(map)
         self.scene.clear()
-        self.zmap_compiler.display(self.win.graphChooser.currentText(), self.scene)        
+
+        for i in range(200):
+            self.layout.one_step(map)
+
+        self.display.display(map, self.scene)    
+        
+         
 
     def confirm_destructive_action(self, action):
         msg = QMessageBox()

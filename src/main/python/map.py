@@ -112,6 +112,11 @@ class Map:
         self.first_room = None
         self.rooms = {}
         self.passages = []
+        self.arranged = False
+        self.options = {}
+
+    def set_option(self,key, value):
+        self.options[key] = value
 
     def add_room(self, id, label=None, subtype=None, free=False):
         if id not in self.rooms.keys():
@@ -120,6 +125,9 @@ class Map:
             if not self.first_room:
                 self.first_room = room
             return room
+        elif free:
+            room = self.rooms[id]
+            room.free = free
         return self.rooms[id]
 
     def add_passage(self, from_room, from_dir, to_room=None, back_direction=None, modifier=None, two_way=False):
@@ -143,7 +151,8 @@ class Map:
                     if not next_room or next_room.position:
                         continue
                     frontier.append(next_room)
-                    calculate_position_for(next_room)
+                    if not next_room.position:
+                        calculate_position_for(next_room)
                     rooms_by_position[next_room.position] = next_room
             if all_rooms:
                 one_room = random.choice(all_rooms)

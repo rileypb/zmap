@@ -119,7 +119,7 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#room.
     def exitRoom(self, ctx:zmapParser.RoomContext):
-        id = ctx.name().getText()
+        id = self.ctxid if self.ctxid else ctx.name().getText()
         name = ctx.name().getText()
         room = self.new_map.add_room(id=id, label=name, subtype=self.subtype)
         if not self.room1:
@@ -134,7 +134,7 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#freeRoom.
     def exitFreeRoom(self, ctx:zmapParser.FreeRoomContext):
-        id = ctx.name().getText()
+        id = self.ctxid if self.ctxid else ctx.name().getText()
         name = ctx.name().getText()
         room = self.new_map.add_room(id=id, label=name, subtype=self.subtype, free=True)
         if not self.room1:
@@ -230,7 +230,10 @@ class zmapListenerImpl(ParseTreeListener):
         self.ctxid = id(ctx)
 
         room = self.new_map.add_room(id=self.ctxid, label='?', subtype=self.subtype, free=True)
-        self.room2 = room
+        if not self.room1:
+            self.room1 = room
+        else:
+            self.room2 = room
         # self.new_map.add_room(id(ctx), subtype="Unknown")
 
     # Exit a parse tree produced by zmapParser#unknown.
@@ -240,16 +243,16 @@ class zmapListenerImpl(ParseTreeListener):
 
     # Enter a parse tree produced by zmapParser#special.
     def enterSpecial(self, ctx:zmapParser.SpecialContext):
-        self.subtype = "Special"
-        self.ctxid = id(ctx)
-        print("entering special: ", self.subtype, self.ctxid)
+        pass
         # node = ctx.node()
         # room = node.room() or node.freeRoom()
         # self.new_map.add_room(id(ctx), label=room.name().getText(), subtype="Special")
 
     # Exit a parse tree produced by zmapParser#special.
     def exitSpecial(self, ctx:zmapParser.SpecialContext):
-        pass
+        self.subtype = "Special"
+        self.ctxid = id(ctx)
+        print("exiting special: ", self.subtype, self.ctxid)
 
 
 
