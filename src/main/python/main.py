@@ -41,8 +41,6 @@ class ZApp:
 
         self.win.splitter.setSizes([200, 400])
 
-        self.scene = QGraphicsScene()
-        self.win.graphicsView.setScene(self.scene)
         self.win.actionCompile.triggered.connect(self.compile)
         self.win.actionNew.triggered.connect(self.new_zmap)
         self.win.actionSave.triggered.connect(self.save_zmap)
@@ -79,7 +77,6 @@ class ZApp:
         self.win.plainTextEdit.update();
 
     def compile(self, *args):
-        self.scene.clear()
         self.maps, exc = self.zmap_compiler.compile(self.win.plainTextEdit.toPlainText())
         
         if exc:
@@ -104,7 +101,9 @@ class ZApp:
         map = self.maps[self.win.graphChooser.currentText()]
         if not map.arranged:
             self.arranger.arrange(map)
-        self.scene.clear()
+            
+        self.scene = QGraphicsScene()
+        self.win.graphicsView.setScene(self.scene)
 
         for i in range(200):
             self.layout.one_step(map)
