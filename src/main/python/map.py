@@ -63,20 +63,52 @@ def calculate_position_for(room):
     room.position = (cx / max(1, count), cy / max(1, count))
 
 
+
 class Passage:
-    def __init__(self, from_room, direction, to_room=None, back_direction=None, modifier=None, two_way=False) -> None:
-        self.from_room = from_room
-        self.direction = direction
-        self.to_room = to_room
-        self.from_room.passages.append(self)
-        if to_room:
-            to_room.passages.append(self)
-        self.modifier = modifier
-        self.two_way = two_way
-        if back_direction:
-            self.back_direction = back_direction
-        else:
-            self.back_direction = opposite(direction)
+    def __init__(self):
+        self.from_room = None
+        self.direction = None
+        self.back_direction = None
+        self.to_room = None
+        self.attrs = {}
+        self.two_way = False
+        self.modifier = None
+
+    # def __init__(self, from_room, direction, to_room=None, back_direction=None, modifier=None, two_way=False) -> None:
+    #     self.from_room = from_room
+    #     self.direction = direction
+    #     self.to_room = to_room
+    #     self.from_room.passages.append(self)
+    #     if to_room:
+    #         to_room.passages.append(self)
+    #     self.modifier = modifier
+    #     self.two_way = two_way
+    #     if back_direction:
+    #         self.back_direction = back_direction
+    #     else:
+    #         self.back_direction = opposite(direction)
+
+    def set_left_end(self, room, port:str) -> None:
+        self.from_room = room
+        self.from_room.add_passage(self)
+        self.direction = port
+
+    def set_right_end(self, room, port:str) -> None:
+        self.to_room = room
+        self.to_room.add_passage(self)
+        self.back_direction = port
+
+    def set_attrs(self, attrs:dict) -> None:
+        self.attrs.update(attrs)
+
+    def set_one_way(self) -> None:
+        self.two_way = False
+
+    def set_two_way(self) -> None:
+        self.two_way = True
+
+    def get_back_direction(self) -> str:
+        return self.back_direction or opposite(self.direction)
 
     def __str__(self):
         if self.to_room:
@@ -99,21 +131,40 @@ class Room:
         self.subtype = subtype
         self.position = None
         self.passages = []
-        self.free = free
+        self.attrs = {}
+
+    def free(self):
+        return "free" in self.attrs and self.attrs["free"]
+
+    def set_attrs(self, attrs:dict) -> None:
+        self.attrs.update(attrs)
+
+    def remove_underscores(self, text:str) -> str:
+        return text.replace('_', ' ')
+
+    def add_passage(self, passage):
+        self.passages.append(passage)
+    
+    def display_name(self) -> str:
+        return self.remove_underscores(self.label or self.name or self.id)
 
     def __str__(self):
-        return f'[{self.label}]'
+        return f'[{self.display_name()}]'
 
     def __repr__(self):
         return self.__str__()
 
 class Map:
-    def __init__(self) -> None:
+    def __init__(self, id_) -> None:
+        self.id_ = id_
         self.first_room = None
         self.rooms = {}
         self.passages = []
         self.arranged = False
         self.options = {}
+        self.graph_attrs:dict = {}
+        self.node_attrs:dict = {}
+        self.edge_attrs:dict = {}
 
     def set_option(self,key, value):
         self.options[key] = value
@@ -130,9 +181,19 @@ class Map:
             room.free = free
         return self.rooms[id]
 
-    def add_passage(self, from_room, from_dir, to_room=None, back_direction=None, modifier=None, two_way=False):
-        from_passage = Passage(from_room, from_dir, to_room=to_room, back_direction=back_direction, modifier=modifier, two_way=two_way)
+    def set_graph_attrs(self, attrs:dict):
+        self.graph_attrs.update(**attrs)
+
+    def set_node_attrs(self, attrs:dict):
+        self.node_attrs.update(**attrs)
+
+    def set_edge_attrs(self, attrs:dict):
+        self.edge_attrs.update(**attrs)
+
+    def add_passage(self):
+        from_passage = Passage()
         self.passages.append(from_passage)
+        return from_passage
 
     def position_rooms(self):
         if not self.first_room:

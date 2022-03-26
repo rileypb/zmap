@@ -100,13 +100,13 @@ class Display:
         for room in map.rooms.values():
             x = 200+150*room.position[0]
             y = 200+150*room.position[1]
-            text = scene.addText(room.label)
+            text = scene.addText(room.display_name())
             text.setPos(x,-y)
             text.setDefaultTextColor(TEXT_COLOR)
             text.setFont(FONT)
             text.setTextWidth(50)
             text.document().setDefaultTextOption(TEXT_OPTION)
-            if len(room.label) > 12:
+            if len(room.display_name()) > 12:
                 text.setFont(SMALL_FONT)
             text_bounding_rect = text.boundingRect()
             room.bounding_rect = QRectF(x - text_bounding_rect.width()/2, -y - text_bounding_rect.height()/2, max(50, text_bounding_rect.width()), text_bounding_rect.height())

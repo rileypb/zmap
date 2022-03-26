@@ -26,7 +26,7 @@ class Layout:
         force_by_node = {}
         node: Room
         for node in map.rooms.values():
-            if (node.free):
+            if (node.free()):
                 node2: Room
                 total_force = (0, 0)
                 for node2 in map.rooms.values():
