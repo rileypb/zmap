@@ -54,7 +54,7 @@ def calculate_position_for(room):
             count += 1
 
             if not passage.to_room.subtype:
-                opposite_direction = passage.back_direction if passage.from_room == room else opposite(passage.back_direction)
+                opposite_direction = passage.back_direction if passage.from_room == room else opposite(passage.direction)
                 new_position = (opposite_position[0] + scale * get_x_change(opposite_direction), opposite_position[1] + scale * get_y_change(opposite_direction))
                 cx += new_position[0]
                 cy += new_position[1]
@@ -109,6 +109,9 @@ class Passage:
 
     def get_back_direction(self) -> str:
         return self.back_direction or opposite(self.direction)
+    
+    def draw_arrows(self) -> bool:
+        return "noarrows" not in self.attrs or not self.attrs["noarrows"]
 
     def __str__(self):
         if self.to_room:

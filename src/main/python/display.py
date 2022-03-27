@@ -130,6 +130,7 @@ class Display:
                 pairs[(from_room, to_room)] = [passage]
         
         for passage in map.passages:
+            draw_arrows = passage.draw_arrows()
             if passage.two_way:
                 from_room = passage.from_room
                 to_room = passage.to_room
@@ -140,8 +141,9 @@ class Display:
                 line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
                 if from_direction == 'u' or from_direction == 'd' or to_direction == 'u' or to_direction == 'd':
                     line.setPen(DASH_PEN)
-                add_arrowhead(scene, to_point, from_point)
-                add_arrowhead(scene, from_point, to_point)
+                if draw_arrows:
+                    add_arrowhead(scene, to_point, from_point)
+                    add_arrowhead(scene, from_point, to_point)
             else:
                 from_room = passage.from_room
                 to_room = passage.to_room
@@ -152,4 +154,6 @@ class Display:
                 line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
                 if from_direction == 'u' or from_direction == 'd':
                     line.setPen(DASH_PEN)
-                add_arrowhead(scene, to_point, from_point)
+                if draw_arrows:
+                    add_arrowhead(scene, to_point, from_point)
+                    
