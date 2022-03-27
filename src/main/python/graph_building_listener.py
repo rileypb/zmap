@@ -16,6 +16,7 @@ class GraphBuildingListener(ParseTreeListener):
     def enterParse(self, ctx:zmapParser.ParseContext):
         self.maps = {}
         self.context_stack:Stack = Stack()
+        self.attrs = None
 
     # Exit a parse tree produced by zmapParser#parse.
     def exitParse(self, ctx:zmapParser.ParseContext):
