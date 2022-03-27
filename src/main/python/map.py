@@ -132,6 +132,16 @@ class Passage:
     def __repr__(self):
         return self.__str__()
 
+
+
+def remove_underscores(text:str) -> str:
+    return text.replace('_', ' ')
+
+def remove_quotes(text:str) -> str:
+    if text[0] == '"' and text[-1] == '"':
+        return text[1:-1]
+    return text
+
 class Room:
     def __init__(self, id, label, subtype=None, free=False) -> None:
         self.id = id
@@ -145,14 +155,14 @@ class Room:
         self.passages = []
         self.attrs = {}
 
+    def dark(self):
+        return self.attrs.get("dark", False)
+
     def free(self):
         return "free" in self.attrs and self.attrs["free"]
 
     def set_attrs(self, attrs:dict) -> None:
         self.attrs.update(attrs)
-
-    def remove_underscores(self, text:str) -> str:
-        return text.replace('_', ' ')
 
     def add_passage(self, passage):
         self.passages.append(passage)
@@ -160,7 +170,7 @@ class Room:
     def display_name(self) -> str:
         if self.subtype == 'Unknown':
             return '?'
-        return self.remove_underscores(self.label or self.name or self.id)
+        return remove_quotes(remove_underscores(self.label or self.name or self.id))
 
     def __str__(self):
         return f'[{self.display_name()}]'
@@ -179,6 +189,9 @@ class Map:
         self.graph_attrs:dict = {}
         self.node_attrs:dict = {}
         self.edge_attrs:dict = {}
+
+    def display_name(self):
+        return remove_quotes(remove_underscores(self.id_))
 
     def set_option(self,key, value):
         self.options[key] = value
@@ -236,6 +249,9 @@ class Map:
                 one_room = random.choice(all_rooms)
                 frontier.append(one_room)
                 one_room.position = (0, 0)
+
+    def __str__(self):
+        return self.display_name()
 
 
     

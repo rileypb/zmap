@@ -107,6 +107,15 @@ class zmapListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by zmapParser#dark_unknown.
+    def enterDark_unknown(self, ctx:zmapParser.Dark_unknownContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#dark_unknown.
+    def exitDark_unknown(self, ctx:zmapParser.Dark_unknownContext):
+        pass
+
+
     # Enter a parse tree produced by zmapParser#edgeop.
     def enterEdgeop(self, ctx:zmapParser.EdgeopContext):
         pass

@@ -9,6 +9,15 @@ else:
 from map import Map, Room, Passage
 from utils import Stack
 
+
+def remove_underscores(text:str) -> str:
+    return text.replace('_', ' ')
+
+def remove_quotes(text:str) -> str:
+    if text[0] == '"' and text[-1] == '"':
+        return text[1:-1]
+    return text
+
 # This class defines a complete listener for a parse tree produced by zmapParser.
 class GraphBuildingListener(ParseTreeListener):
 
@@ -25,7 +34,7 @@ class GraphBuildingListener(ParseTreeListener):
 
     # Enter a parse tree produced by zmapParser#graph.
     def enterGraph(self, ctx:zmapParser.GraphContext):
-        id_ = ctx.id_().getText()
+        id_ = remove_quotes(remove_underscores(ctx.id_().getText()))
         self.new_map = Map(id_)
         self.maps[id_] = self.new_map
         print("push map")
@@ -155,6 +164,19 @@ class GraphBuildingListener(ParseTreeListener):
         room.subtype = "Unknown"
 
 
+    # Enter a parse tree produced by zmapParser#dark_unknown.
+    def enterDark_unknown(self, ctx:zmapParser.Dark_unknownContext):
+        pass
+
+    # Exit a parse tree produced by zmapParser#dark_unknown.
+    def exitDark_unknown(self, ctx:zmapParser.Dark_unknownContext):
+        id_ = str(id(ctx))
+        room = id_ and self.new_map.add_room(id_)
+        self.context_stack.peek().set_right_end(room, None)
+        room.subtype = "Unknown"
+        room.attrs["dark"] = True
+
+
     # Enter a parse tree produced by zmapParser#edgeop.
     def enterEdgeop(self, ctx:zmapParser.EdgeopContext):
         pass
@@ -214,10 +236,13 @@ class GraphBuildingListener(ParseTreeListener):
     # Exit a parse tree produced by zmapParser#node_id_right.
     def exitNode_id_right(self, ctx:zmapParser.Node_id_rightContext):
         id_ = ctx.id_() and ctx.id_().getText()
+        if ctx.special():
+            id_ = str(id(ctx))
         room = id_ and self.new_map.add_room(id_)
         port_right = ctx.port_right() and ctx.port_right().getText()[:-1]
         self.context_stack.peek().set_right_end(room, port_right)
         if ctx.special():
+            room.label =  ctx.id_().getText()
             room.subtype = "Special"
 
 

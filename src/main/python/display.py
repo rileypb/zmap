@@ -3,8 +3,12 @@ import math
 
 from PyQt5.QtGui import QColor, QFont, QTextOption, QPolygonF, QBrush, QPen
 from PyQt5.QtCore import Qt, QPointF, QRectF
+from PyQt5.QtWidgets import QGraphicsScene
+
 
 TEXT_COLOR = QColor("black")
+DARK_TEXT_COLOR = QColor("white")
+DARK_COLOR = QColor("#555555")
 FONT = QFont("sans-serif", pointSize=10)
 SMALL_FONT = QFont("sans-serif", pointSize=6)
 TEXT_OPTION = QTextOption(Qt.AlignCenter)
@@ -93,16 +97,22 @@ def add_arrowhead(scene, to_point, from_point):
     scene.addPolygon(polygon, brush=ARROWHEAD_BRUSH)
 
 class Display:
-    def display(self, map, scene):
+    def display(self, map, scene:QGraphicsScene):
          
         room_to_rect = {}
 
         for room in map.rooms.values():
+            dark = room.dark()
             x = 200+150*room.position[0]
             y = 200+150*room.position[1]
             text = scene.addText(room.display_name())
             text.setPos(x,-y)
-            text.setDefaultTextColor(TEXT_COLOR)
+            if dark:
+                text.setDefaultTextColor(DARK_TEXT_COLOR)
+            else:
+                text.setDefaultTextColor(TEXT_COLOR)
+            text.setZValue(0)
+
             text.setFont(FONT)
             text.setTextWidth(50)
             text.document().setDefaultTextOption(TEXT_OPTION)
@@ -111,10 +121,21 @@ class Display:
             text_bounding_rect = text.boundingRect()
             room.bounding_rect = QRectF(x - text_bounding_rect.width()/2, -y - text_bounding_rect.height()/2, max(50, text_bounding_rect.width()), text_bounding_rect.height())
             text.setPos(x - text_bounding_rect.width()/2, -y - text_bounding_rect.height()/2)
+            if dark:
+                brush = QBrush(DARK_COLOR)
             if not room.subtype:
-                room_to_rect[room] = scene.addRect(room.bounding_rect)
+                if dark:
+                    rect:QRectF = scene.addRect(room.bounding_rect, brush=brush)
+                else:
+                    rect:QRectF = scene.addRect(room.bounding_rect)
+                room_to_rect[room] = rect
             elif room.subtype:
-                room_to_rect[room] = scene.addEllipse(room.bounding_rect)
+                if dark:
+                    room_to_rect[room] = scene.addEllipse(room.bounding_rect, brush=brush)
+                else:
+                    room_to_rect[room] = scene.addEllipse(room.bounding_rect)
+
+            text.setZValue(50)
 
         pairs = {}
         for passage in map.passages:

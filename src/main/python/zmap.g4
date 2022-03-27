@@ -72,11 +72,15 @@ edge_stmt
    ;
 
 edgeRHS
-   : edgeop ( node_id_right | unknown )
+   : edgeop ( node_id_right | unknown | dark_unknown )
    ;
 
 unknown
    : '?'
+   ;
+
+dark_unknown
+   : '!'
    ;
 
 edgeop

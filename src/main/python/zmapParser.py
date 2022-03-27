@@ -11,50 +11,53 @@ else:
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\27")
-        buf.write("\u008b\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\30")
+        buf.write("\u0090\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
-        buf.write("\4\24\t\24\4\25\t\25\3\2\6\2,\n\2\r\2\16\2-\3\3\5\3\61")
-        buf.write("\n\3\3\3\3\3\3\3\3\3\3\4\3\4\5\49\n\4\7\4;\n\4\f\4\16")
-        buf.write("\4>\13\4\3\5\3\5\3\5\5\5C\n\5\3\6\3\6\3\6\3\7\3\7\5\7")
-        buf.write("J\n\7\3\7\6\7M\n\7\r\7\16\7N\3\b\3\b\5\bS\n\b\7\bU\n\b")
-        buf.write("\f\b\16\bX\13\b\3\b\3\b\3\t\3\t\3\t\5\t_\n\t\3\n\3\n\3")
-        buf.write("\n\5\nd\n\n\3\13\3\13\3\13\5\13i\n\13\3\f\3\f\3\r\3\r")
-        buf.write("\3\16\3\16\5\16q\n\16\3\17\3\17\5\17u\n\17\3\20\3\20\3")
-        buf.write("\20\3\21\5\21{\n\21\3\21\3\21\5\21\177\n\21\3\22\3\22")
-        buf.write("\3\23\3\23\3\23\3\24\3\24\3\24\3\25\3\25\3\25\2\2\26\2")
-        buf.write("\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(\2\5\3\2\17")
-        buf.write("\21\3\2\13\f\3\2\22\24\2\u0087\2+\3\2\2\2\4\60\3\2\2\2")
-        buf.write("\6<\3\2\2\2\bB\3\2\2\2\nD\3\2\2\2\fL\3\2\2\2\16V\3\2\2")
-        buf.write("\2\20[\3\2\2\2\22`\3\2\2\2\24e\3\2\2\2\26j\3\2\2\2\30")
-        buf.write("l\3\2\2\2\32n\3\2\2\2\34r\3\2\2\2\36v\3\2\2\2 z\3\2\2")
-        buf.write("\2\"\u0080\3\2\2\2$\u0082\3\2\2\2&\u0085\3\2\2\2(\u0088")
-        buf.write("\3\2\2\2*,\5\4\3\2+*\3\2\2\2,-\3\2\2\2-+\3\2\2\2-.\3\2")
-        buf.write("\2\2.\3\3\2\2\2/\61\5(\25\2\60/\3\2\2\2\60\61\3\2\2\2")
-        buf.write("\61\62\3\2\2\2\62\63\7\3\2\2\63\64\5\6\4\2\64\65\7\4\2")
-        buf.write("\2\65\5\3\2\2\2\668\5\b\5\2\679\7\5\2\28\67\3\2\2\289")
-        buf.write("\3\2\2\29;\3\2\2\2:\66\3\2\2\2;>\3\2\2\2<:\3\2\2\2<=\3")
-        buf.write("\2\2\2=\7\3\2\2\2><\3\2\2\2?C\5\32\16\2@C\5\22\n\2AC\5")
-        buf.write("\n\6\2B?\3\2\2\2B@\3\2\2\2BA\3\2\2\2C\t\3\2\2\2DE\t\2")
-        buf.write("\2\2EF\5\f\7\2F\13\3\2\2\2GI\7\6\2\2HJ\5\16\b\2IH\3\2")
-        buf.write("\2\2IJ\3\2\2\2JK\3\2\2\2KM\7\7\2\2LG\3\2\2\2MN\3\2\2\2")
-        buf.write("NL\3\2\2\2NO\3\2\2\2O\r\3\2\2\2PR\5\20\t\2QS\7\b\2\2R")
-        buf.write("Q\3\2\2\2RS\3\2\2\2SU\3\2\2\2TP\3\2\2\2UX\3\2\2\2VT\3")
-        buf.write("\2\2\2VW\3\2\2\2WY\3\2\2\2XV\3\2\2\2YZ\5\20\t\2Z\17\3")
-        buf.write("\2\2\2[^\5(\25\2\\]\7\t\2\2]_\5(\25\2^\\\3\2\2\2^_\3\2")
-        buf.write("\2\2_\21\3\2\2\2`a\5\36\20\2ac\5\24\13\2bd\5\f\7\2cb\3")
-        buf.write("\2\2\2cd\3\2\2\2d\23\3\2\2\2eh\5\30\r\2fi\5 \21\2gi\5")
-        buf.write("\26\f\2hf\3\2\2\2hg\3\2\2\2i\25\3\2\2\2jk\7\n\2\2k\27")
-        buf.write("\3\2\2\2lm\t\3\2\2m\31\3\2\2\2np\5\34\17\2oq\5\f\7\2p")
-        buf.write("o\3\2\2\2pq\3\2\2\2q\33\3\2\2\2rt\5(\25\2su\5\"\22\2t")
-        buf.write("s\3\2\2\2tu\3\2\2\2u\35\3\2\2\2vw\5(\25\2wx\5$\23\2x\37")
-        buf.write("\3\2\2\2y{\5&\24\2zy\3\2\2\2z{\3\2\2\2{|\3\2\2\2|~\5(")
-        buf.write("\25\2}\177\5\"\22\2~}\3\2\2\2~\177\3\2\2\2\177!\3\2\2")
-        buf.write("\2\u0080\u0081\7\r\2\2\u0081#\3\2\2\2\u0082\u0083\7\16")
-        buf.write("\2\2\u0083\u0084\5(\25\2\u0084%\3\2\2\2\u0085\u0086\5")
-        buf.write("(\25\2\u0086\u0087\7\16\2\2\u0087\'\3\2\2\2\u0088\u0089")
-        buf.write("\t\4\2\2\u0089)\3\2\2\2\22-\608<BINRV^chptz~")
+        buf.write("\4\24\t\24\4\25\t\25\4\26\t\26\3\2\6\2.\n\2\r\2\16\2/")
+        buf.write("\3\3\5\3\63\n\3\3\3\3\3\3\3\3\3\3\4\3\4\5\4;\n\4\7\4=")
+        buf.write("\n\4\f\4\16\4@\13\4\3\5\3\5\3\5\5\5E\n\5\3\6\3\6\3\6\3")
+        buf.write("\7\3\7\5\7L\n\7\3\7\6\7O\n\7\r\7\16\7P\3\b\3\b\5\bU\n")
+        buf.write("\b\7\bW\n\b\f\b\16\bZ\13\b\3\b\3\b\3\t\3\t\3\t\5\ta\n")
+        buf.write("\t\3\n\3\n\3\n\5\nf\n\n\3\13\3\13\3\13\3\13\5\13l\n\13")
+        buf.write("\3\f\3\f\3\r\3\r\3\16\3\16\3\17\3\17\5\17v\n\17\3\20\3")
+        buf.write("\20\5\20z\n\20\3\21\3\21\3\21\3\22\5\22\u0080\n\22\3\22")
+        buf.write("\3\22\5\22\u0084\n\22\3\23\3\23\3\24\3\24\3\24\3\25\3")
+        buf.write("\25\3\25\3\26\3\26\3\26\2\2\27\2\4\6\b\n\f\16\20\22\24")
+        buf.write("\26\30\32\34\36 \"$&(*\2\5\3\2\20\22\3\2\f\r\3\2\23\25")
+        buf.write("\2\u008c\2-\3\2\2\2\4\62\3\2\2\2\6>\3\2\2\2\bD\3\2\2\2")
+        buf.write("\nF\3\2\2\2\fN\3\2\2\2\16X\3\2\2\2\20]\3\2\2\2\22b\3\2")
+        buf.write("\2\2\24g\3\2\2\2\26m\3\2\2\2\30o\3\2\2\2\32q\3\2\2\2\34")
+        buf.write("s\3\2\2\2\36w\3\2\2\2 {\3\2\2\2\"\177\3\2\2\2$\u0085\3")
+        buf.write("\2\2\2&\u0087\3\2\2\2(\u008a\3\2\2\2*\u008d\3\2\2\2,.")
+        buf.write("\5\4\3\2-,\3\2\2\2./\3\2\2\2/-\3\2\2\2/\60\3\2\2\2\60")
+        buf.write("\3\3\2\2\2\61\63\5*\26\2\62\61\3\2\2\2\62\63\3\2\2\2\63")
+        buf.write("\64\3\2\2\2\64\65\7\3\2\2\65\66\5\6\4\2\66\67\7\4\2\2")
+        buf.write("\67\5\3\2\2\28:\5\b\5\29;\7\5\2\2:9\3\2\2\2:;\3\2\2\2")
+        buf.write(";=\3\2\2\2<8\3\2\2\2=@\3\2\2\2><\3\2\2\2>?\3\2\2\2?\7")
+        buf.write("\3\2\2\2@>\3\2\2\2AE\5\34\17\2BE\5\22\n\2CE\5\n\6\2DA")
+        buf.write("\3\2\2\2DB\3\2\2\2DC\3\2\2\2E\t\3\2\2\2FG\t\2\2\2GH\5")
+        buf.write("\f\7\2H\13\3\2\2\2IK\7\6\2\2JL\5\16\b\2KJ\3\2\2\2KL\3")
+        buf.write("\2\2\2LM\3\2\2\2MO\7\7\2\2NI\3\2\2\2OP\3\2\2\2PN\3\2\2")
+        buf.write("\2PQ\3\2\2\2Q\r\3\2\2\2RT\5\20\t\2SU\7\b\2\2TS\3\2\2\2")
+        buf.write("TU\3\2\2\2UW\3\2\2\2VR\3\2\2\2WZ\3\2\2\2XV\3\2\2\2XY\3")
+        buf.write("\2\2\2Y[\3\2\2\2ZX\3\2\2\2[\\\5\20\t\2\\\17\3\2\2\2]`")
+        buf.write("\5*\26\2^_\7\t\2\2_a\5*\26\2`^\3\2\2\2`a\3\2\2\2a\21\3")
+        buf.write("\2\2\2bc\5 \21\2ce\5\24\13\2df\5\f\7\2ed\3\2\2\2ef\3\2")
+        buf.write("\2\2f\23\3\2\2\2gk\5\32\16\2hl\5\"\22\2il\5\26\f\2jl\5")
+        buf.write("\30\r\2kh\3\2\2\2ki\3\2\2\2kj\3\2\2\2l\25\3\2\2\2mn\7")
+        buf.write("\n\2\2n\27\3\2\2\2op\7\13\2\2p\31\3\2\2\2qr\t\3\2\2r\33")
+        buf.write("\3\2\2\2su\5\36\20\2tv\5\f\7\2ut\3\2\2\2uv\3\2\2\2v\35")
+        buf.write("\3\2\2\2wy\5*\26\2xz\5$\23\2yx\3\2\2\2yz\3\2\2\2z\37\3")
+        buf.write("\2\2\2{|\5*\26\2|}\5&\24\2}!\3\2\2\2~\u0080\5(\25\2\177")
+        buf.write("~\3\2\2\2\177\u0080\3\2\2\2\u0080\u0081\3\2\2\2\u0081")
+        buf.write("\u0083\5*\26\2\u0082\u0084\5$\23\2\u0083\u0082\3\2\2\2")
+        buf.write("\u0083\u0084\3\2\2\2\u0084#\3\2\2\2\u0085\u0086\7\16\2")
+        buf.write("\2\u0086%\3\2\2\2\u0087\u0088\7\17\2\2\u0088\u0089\5*")
+        buf.write("\26\2\u0089\'\3\2\2\2\u008a\u008b\5*\26\2\u008b\u008c")
+        buf.write("\7\17\2\2\u008c)\3\2\2\2\u008d\u008e\t\4\2\2\u008e+\3")
+        buf.write("\2\2\2\22/\62:>DKPTX`ekuy\177\u0083")
         return buf.getvalue()
 
 
@@ -69,14 +72,15 @@ class zmapParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     literalNames = [ "<INVALID>", "'{'", "'}'", "';'", "'['", "']'", "','", 
-                     "'='", "'?'", "'-->'", "'<->'", "'*'", "':'", "'graph'", 
-                     "'room'", "'passage'" ]
+                     "'='", "'?'", "'!'", "'-->'", "'<->'", "'*'", "':'", 
+                     "'graph'", "'room'", "'passage'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "GRAPH", "NODE", "EDGE", "NUMBER", "STRING", 
-                      "ID", "COMMENT", "LINE_COMMENT", "WS" ]
+                      "<INVALID>", "<INVALID>", "GRAPH", "NODE", "EDGE", 
+                      "NUMBER", "STRING", "ID", "COMMENT", "LINE_COMMENT", 
+                      "WS" ]
 
     RULE_parse = 0
     RULE_graph = 1
@@ -89,20 +93,22 @@ class zmapParser ( Parser ):
     RULE_edge_stmt = 8
     RULE_edgeRHS = 9
     RULE_unknown = 10
-    RULE_edgeop = 11
-    RULE_node_stmt = 12
-    RULE_node_id = 13
-    RULE_node_id_left = 14
-    RULE_node_id_right = 15
-    RULE_special = 16
-    RULE_port_left = 17
-    RULE_port_right = 18
-    RULE_id_ = 19
+    RULE_dark_unknown = 11
+    RULE_edgeop = 12
+    RULE_node_stmt = 13
+    RULE_node_id = 14
+    RULE_node_id_left = 15
+    RULE_node_id_right = 16
+    RULE_special = 17
+    RULE_port_left = 18
+    RULE_port_right = 19
+    RULE_id_ = 20
 
     ruleNames =  [ "parse", "graph", "stmt_list", "stmt", "attr_stmt", "attr_list", 
                    "a_list", "attr", "edge_stmt", "edgeRHS", "unknown", 
-                   "edgeop", "node_stmt", "node_id", "node_id_left", "node_id_right", 
-                   "special", "port_left", "port_right", "id_" ]
+                   "dark_unknown", "edgeop", "node_stmt", "node_id", "node_id_left", 
+                   "node_id_right", "special", "port_left", "port_right", 
+                   "id_" ]
 
     EOF = Token.EOF
     T__0=1
@@ -117,15 +123,16 @@ class zmapParser ( Parser ):
     T__9=10
     T__10=11
     T__11=12
-    GRAPH=13
-    NODE=14
-    EDGE=15
-    NUMBER=16
-    STRING=17
-    ID=18
-    COMMENT=19
-    LINE_COMMENT=20
-    WS=21
+    T__12=13
+    GRAPH=14
+    NODE=15
+    EDGE=16
+    NUMBER=17
+    STRING=18
+    ID=19
+    COMMENT=20
+    LINE_COMMENT=21
+    WS=22
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -171,13 +178,13 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 41 
+            self.state = 43 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 40
+                self.state = 42
                 self.graph()
-                self.state = 43 
+                self.state = 45 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << zmapParser.T__0) | (1 << zmapParser.NUMBER) | (1 << zmapParser.STRING) | (1 << zmapParser.ID))) != 0)):
@@ -228,19 +235,19 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 46
+            self.state = 48
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << zmapParser.NUMBER) | (1 << zmapParser.STRING) | (1 << zmapParser.ID))) != 0):
-                self.state = 45
+                self.state = 47
                 self.id_()
 
 
-            self.state = 48
-            self.match(zmapParser.T__0)
-            self.state = 49
-            self.stmt_list()
             self.state = 50
+            self.match(zmapParser.T__0)
+            self.state = 51
+            self.stmt_list()
+            self.state = 52
             self.match(zmapParser.T__1)
         except RecognitionException as re:
             localctx.exception = re
@@ -286,21 +293,21 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 58
+            self.state = 60
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << zmapParser.GRAPH) | (1 << zmapParser.NODE) | (1 << zmapParser.EDGE) | (1 << zmapParser.NUMBER) | (1 << zmapParser.STRING) | (1 << zmapParser.ID))) != 0):
-                self.state = 52
-                self.stmt()
                 self.state = 54
+                self.stmt()
+                self.state = 56
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if _la==zmapParser.T__2:
-                    self.state = 53
+                    self.state = 55
                     self.match(zmapParser.T__2)
 
 
-                self.state = 60
+                self.state = 62
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -351,24 +358,24 @@ class zmapParser ( Parser ):
         localctx = zmapParser.StmtContext(self, self._ctx, self.state)
         self.enterRule(localctx, 6, self.RULE_stmt)
         try:
-            self.state = 64
+            self.state = 66
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,4,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 61
+                self.state = 63
                 self.node_stmt()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 62
+                self.state = 64
                 self.edge_stmt()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 63
+                self.state = 65
                 self.attr_stmt()
                 pass
 
@@ -423,14 +430,14 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 66
+            self.state = 68
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << zmapParser.GRAPH) | (1 << zmapParser.NODE) | (1 << zmapParser.EDGE))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
                 self.consume()
-            self.state = 67
+            self.state = 69
             self.attr_list()
         except RecognitionException as re:
             localctx.exception = re
@@ -476,23 +483,23 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 74 
+            self.state = 76 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 69
-                self.match(zmapParser.T__3)
                 self.state = 71
+                self.match(zmapParser.T__3)
+                self.state = 73
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << zmapParser.NUMBER) | (1 << zmapParser.STRING) | (1 << zmapParser.ID))) != 0):
-                    self.state = 70
+                    self.state = 72
                     self.a_list()
 
 
-                self.state = 73
+                self.state = 75
                 self.match(zmapParser.T__4)
-                self.state = 76 
+                self.state = 78 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (_la==zmapParser.T__3):
@@ -542,26 +549,26 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 84
+            self.state = 86
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
-                    self.state = 78
-                    self.attr()
                     self.state = 80
+                    self.attr()
+                    self.state = 82
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     if _la==zmapParser.T__5:
-                        self.state = 79
+                        self.state = 81
                         self.match(zmapParser.T__5)
 
              
-                self.state = 86
+                self.state = 88
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
 
-            self.state = 87
+            self.state = 89
             self.attr()
         except RecognitionException as re:
             localctx.exception = re
@@ -607,15 +614,15 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 89
+            self.state = 91
             self.id_()
-            self.state = 92
+            self.state = 94
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==zmapParser.T__6:
-                self.state = 90
+                self.state = 92
                 self.match(zmapParser.T__6)
-                self.state = 91
+                self.state = 93
                 self.id_()
 
 
@@ -668,15 +675,15 @@ class zmapParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 94
+            self.state = 96
             self.node_id_left()
-            self.state = 95
-            self.edgeRHS()
             self.state = 97
+            self.edgeRHS()
+            self.state = 99
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==zmapParser.T__3:
-                self.state = 96
+                self.state = 98
                 self.attr_list()
 
 
@@ -708,6 +715,10 @@ class zmapParser ( Parser ):
             return self.getTypedRuleContext(zmapParser.UnknownContext,0)
 
 
+        def dark_unknown(self):
+            return self.getTypedRuleContext(zmapParser.Dark_unknownContext,0)
+
+
         def getRuleIndex(self):
             return zmapParser.RULE_edgeRHS
 
@@ -728,18 +739,22 @@ class zmapParser ( Parser ):
         self.enterRule(localctx, 18, self.RULE_edgeRHS)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 99
+            self.state = 101
             self.edgeop()
-            self.state = 102
+            self.state = 105
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [zmapParser.NUMBER, zmapParser.STRING, zmapParser.ID]:
-                self.state = 100
+                self.state = 102
                 self.node_id_right()
                 pass
             elif token in [zmapParser.T__7]:
-                self.state = 101
+                self.state = 103
                 self.unknown()
+                pass
+            elif token in [zmapParser.T__8]:
+                self.state = 104
+                self.dark_unknown()
                 pass
             else:
                 raise NoViableAltException(self)
@@ -781,8 +796,47 @@ class zmapParser ( Parser ):
         self.enterRule(localctx, 20, self.RULE_unknown)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 104
+            self.state = 107
             self.match(zmapParser.T__7)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class Dark_unknownContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+
+        def getRuleIndex(self):
+            return zmapParser.RULE_dark_unknown
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterDark_unknown" ):
+                listener.enterDark_unknown(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitDark_unknown" ):
+                listener.exitDark_unknown(self)
+
+
+
+
+    def dark_unknown(self):
+
+        localctx = zmapParser.Dark_unknownContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 22, self.RULE_dark_unknown)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 109
+            self.match(zmapParser.T__8)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -817,13 +871,13 @@ class zmapParser ( Parser ):
     def edgeop(self):
 
         localctx = zmapParser.EdgeopContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 22, self.RULE_edgeop)
+        self.enterRule(localctx, 24, self.RULE_edgeop)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 106
+            self.state = 111
             _la = self._input.LA(1)
-            if not(_la==zmapParser.T__8 or _la==zmapParser.T__9):
+            if not(_la==zmapParser.T__9 or _la==zmapParser.T__10):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -869,17 +923,17 @@ class zmapParser ( Parser ):
     def node_stmt(self):
 
         localctx = zmapParser.Node_stmtContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 24, self.RULE_node_stmt)
+        self.enterRule(localctx, 26, self.RULE_node_stmt)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 108
+            self.state = 113
             self.node_id()
-            self.state = 110
+            self.state = 115
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==zmapParser.T__3:
-                self.state = 109
+                self.state = 114
                 self.attr_list()
 
 
@@ -924,17 +978,17 @@ class zmapParser ( Parser ):
     def node_id(self):
 
         localctx = zmapParser.Node_idContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 26, self.RULE_node_id)
+        self.enterRule(localctx, 28, self.RULE_node_id)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 112
+            self.state = 117
             self.id_()
-            self.state = 114
+            self.state = 119
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==zmapParser.T__10:
-                self.state = 113
+            if _la==zmapParser.T__11:
+                self.state = 118
                 self.special()
 
 
@@ -979,12 +1033,12 @@ class zmapParser ( Parser ):
     def node_id_left(self):
 
         localctx = zmapParser.Node_id_leftContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 28, self.RULE_node_id_left)
+        self.enterRule(localctx, 30, self.RULE_node_id_left)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 116
+            self.state = 121
             self.id_()
-            self.state = 117
+            self.state = 122
             self.port_left()
         except RecognitionException as re:
             localctx.exception = re
@@ -1031,25 +1085,25 @@ class zmapParser ( Parser ):
     def node_id_right(self):
 
         localctx = zmapParser.Node_id_rightContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 30, self.RULE_node_id_right)
+        self.enterRule(localctx, 32, self.RULE_node_id_right)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 120
+            self.state = 125
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,14,self._ctx)
             if la_ == 1:
-                self.state = 119
+                self.state = 124
                 self.port_right()
 
 
-            self.state = 122
+            self.state = 127
             self.id_()
-            self.state = 124
+            self.state = 129
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==zmapParser.T__10:
-                self.state = 123
+            if _la==zmapParser.T__11:
+                self.state = 128
                 self.special()
 
 
@@ -1087,11 +1141,11 @@ class zmapParser ( Parser ):
     def special(self):
 
         localctx = zmapParser.SpecialContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 32, self.RULE_special)
+        self.enterRule(localctx, 34, self.RULE_special)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 126
-            self.match(zmapParser.T__10)
+            self.state = 131
+            self.match(zmapParser.T__11)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1129,12 +1183,12 @@ class zmapParser ( Parser ):
     def port_left(self):
 
         localctx = zmapParser.Port_leftContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 34, self.RULE_port_left)
+        self.enterRule(localctx, 36, self.RULE_port_left)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 128
-            self.match(zmapParser.T__11)
-            self.state = 129
+            self.state = 133
+            self.match(zmapParser.T__12)
+            self.state = 134
             self.id_()
         except RecognitionException as re:
             localctx.exception = re
@@ -1173,13 +1227,13 @@ class zmapParser ( Parser ):
     def port_right(self):
 
         localctx = zmapParser.Port_rightContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 36, self.RULE_port_right)
+        self.enterRule(localctx, 38, self.RULE_port_right)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 131
+            self.state = 136
             self.id_()
-            self.state = 132
-            self.match(zmapParser.T__11)
+            self.state = 137
+            self.match(zmapParser.T__12)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1222,11 +1276,11 @@ class zmapParser ( Parser ):
     def id_(self):
 
         localctx = zmapParser.Id_Context(self, self._ctx, self.state)
-        self.enterRule(localctx, 38, self.RULE_id_)
+        self.enterRule(localctx, 40, self.RULE_id_)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 134
+            self.state = 139
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << zmapParser.NUMBER) | (1 << zmapParser.STRING) | (1 << zmapParser.ID))) != 0)):
                 self._errHandler.recoverInline(self)
