@@ -136,6 +136,8 @@ class Display:
                 to_room = passage.to_room
                 from_direction = passage.direction
                 to_direction = passage.back_direction
+                if not to_direction:
+                    to_direction = opposite(from_direction)
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
                 line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
@@ -156,4 +158,3 @@ class Display:
                     line.setPen(DASH_PEN)
                 if draw_arrows:
                     add_arrowhead(scene, to_point, from_point)
-                    

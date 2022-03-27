@@ -43,9 +43,11 @@ def calculate_position_for(room):
     for passage in room.passages:
         opposite_room = passage.from_room if passage.to_room == room else passage.to_room
         if opposite_room and opposite_room.position:
-            direction = passage.direction if passage.to_room == room else opposite(passage.direction)
+            direction = passage.direction if passage.to_room == room else passage.back_direction
+            if not direction:
+                direction = opposite(passage.direction)
             opposite_position = opposite_room.position
-            scale = scale_by_modifier[passage.modifier] if passage.modifier else 1
+            scale = scale_by_modifier[passage.modifier()] if passage.modifier() else 1
             if passage.to_room.subtype == 'Unknown':
                 scale = 0.5
             new_position = (opposite_position[0] + scale*get_x_change(direction), opposite_position[1] + scale*get_y_change(direction))
@@ -54,8 +56,10 @@ def calculate_position_for(room):
             count += 1
 
             if not passage.to_room.subtype:
-                opposite_direction = passage.back_direction if passage.from_room == room else opposite(passage.direction)
-                new_position = (opposite_position[0] + scale * get_x_change(opposite_direction), opposite_position[1] + scale * get_y_change(opposite_direction))
+                opposite_direction = passage.back_direction if passage.to_room == room else passage.direction
+                if not opposite_direction:
+                    opposite_direction = opposite(passage.direction)
+                new_position = (opposite_position[0] - scale * get_x_change(opposite_direction), opposite_position[1] - scale * get_y_change(opposite_direction))
                 cx += new_position[0]
                 cy += new_position[1]
                 count += 1
@@ -72,7 +76,6 @@ class Passage:
         self.to_room = None
         self.attrs = {}
         self.two_way = False
-        self.modifier = None
 
     # def __init__(self, from_room, direction, to_room=None, back_direction=None, modifier=None, two_way=False) -> None:
     #     self.from_room = from_room
@@ -113,6 +116,12 @@ class Passage:
     def draw_arrows(self) -> bool:
         return "noarrows" not in self.attrs or not self.attrs["noarrows"]
 
+    def modifier(self) -> str:
+        if "short" in self.attrs and self.attrs["short"]:
+            return '<'
+        if "long" in self.attrs and self.attrs["long"]:
+            return '>'
+
     def __str__(self):
         if self.to_room:
             return f'[{self.from_room}]{self.direction}-->[{self.to_room}]'
@@ -149,6 +158,8 @@ class Room:
         self.passages.append(passage)
     
     def display_name(self) -> str:
+        if self.subtype == 'Unknown':
+            return '?'
         return self.remove_underscores(self.label or self.name or self.id)
 
     def __str__(self):
@@ -171,6 +182,9 @@ class Map:
 
     def set_option(self,key, value):
         self.options[key] = value
+
+    def free(self) -> bool:
+        return "free" in self.graph_attrs and self.graph_attrs["free"]
 
     def add_room(self, id, label=None, subtype=None, free=False):
         if id not in self.rooms.keys():

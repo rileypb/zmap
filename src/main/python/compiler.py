@@ -45,7 +45,6 @@ class Compiler:
 
  
 if __name__ == '__main__':
-    mymap = Map()
 
     kalamontee ="""
 [Courtyard]d<->[Winding Stair]
@@ -165,10 +164,10 @@ if __name__ == '__main__':
     stream = CommonTokenStream(lexer)
     parser = zmapParser(stream)
     tree = parser.parse()
-    listener = zmapListenerImpl()
+    listener = GraphBuildingListener()
     walker = ParseTreeWalker()
     walker.walk(listener, tree)
     listener.new_map.position_rooms()
-    listener.new_map.graph().view()
     for room_name in listener.new_map.rooms:
         room = listener.new_map.rooms[room_name]
+        print(room)

@@ -26,7 +26,7 @@ class Layout:
         force_by_node = {}
         node: Room
         for node in map.rooms.values():
-            if (node.free()):
+            if (node.free() or map.free()):
                 node2: Room
                 total_force = (0, 0)
                 for node2 in map.rooms.values():
@@ -37,12 +37,20 @@ class Layout:
 
                 for passage in node.passages:
                     opposite_room = passage.from_room if passage.to_room == node else passage.to_room
-                    direction = passage.direction if passage.to_room == node else opposite(passage.direction)
+                    direction = passage.direction if passage.to_room == node else passage.back_direction
+                    if not direction:
+                        direction = opposite(passage.direction)
+                    opposite_direction = passage.back_direction if passage.to_room == node else passage.direction
+                    if not opposite_direction:
+                        opposite_direction = opposite(passage.direction)
                     opposite_position = opposite_room.position
-                    scale = scale_by_modifier[passage.modifier] if passage.modifier else 1
+                    scale = scale_by_modifier[passage.modifier()] if passage.modifier() else 1
                     if passage.to_room.subtype == 'Unknown':
                         scale = 0.5
-                    ideal_position = (opposite_position[0] + scale*get_x_change(direction), opposite_position[1] + scale*get_y_change(direction))
+                    ideal_position = ((opposite_position[0] + scale*get_x_change(direction) + \
+                                      node.position[0] - scale*get_x_change(opposite_direction))/2, \
+                                      (opposite_position[1] + scale*get_y_change(direction) +
+                                      node.position[1] - scale*get_y_change(opposite_direction))/2)
                     
                     vec = (ideal_position[0] - node.position[0], ideal_position[1] - node.position[1])
                     dd = math.sqrt(vec[0]**2 + vec[1]**2)

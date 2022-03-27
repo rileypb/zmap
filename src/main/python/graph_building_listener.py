@@ -149,7 +149,10 @@ class GraphBuildingListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#unknown.
     def exitUnknown(self, ctx:zmapParser.UnknownContext):
-        pass
+        id_ = str(id(ctx))
+        room = id_ and self.new_map.add_room(id_)
+        self.context_stack.peek().set_right_end(room, None)
+        room.subtype = "Unknown"
 
 
     # Enter a parse tree produced by zmapParser#edgeop.
@@ -214,6 +217,8 @@ class GraphBuildingListener(ParseTreeListener):
         room = id_ and self.new_map.add_room(id_)
         port_right = ctx.port_right() and ctx.port_right().getText()[:-1]
         self.context_stack.peek().set_right_end(room, port_right)
+        if ctx.special():
+            room.subtype = "Special"
 
 
     # Enter a parse tree produced by zmapParser#special.
