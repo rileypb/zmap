@@ -128,7 +128,6 @@
    <addaction name="actionSave"/>
    <addaction name="actionSave_As"/>
    <addaction name="actionCompile"/>
-   <addaction name="actionOneStep"/>
    <addaction name="actionExport"/>
   </widget>
   <action name="actionOpen">

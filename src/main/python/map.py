@@ -17,9 +17,9 @@ def get_x_change(direction):
     if 'w' in direction:
         return -1
     if 'd' in direction:
-        return -1
+        return 0
     if 'u' in direction:
-        return 1
+        return 0
     return 0
 
 
@@ -145,11 +145,8 @@ def remove_quotes(text:str) -> str:
 class Room:
     def __init__(self, id, label, subtype=None, free=False) -> None:
         self.id = id
-        if subtype == 'Unknown':
-            label = '?'
 
         self.name = label
-        self.label = label
         self.subtype = subtype
         self.position = None
         self.passages = []
@@ -159,7 +156,7 @@ class Room:
         return self.attrs.get("dark", False)
 
     def free(self):
-        return "free" in self.attrs and self.attrs["free"]
+        return self.subtype or self.attrs.get("free", False)
 
     def set_attrs(self, attrs:dict) -> None:
         self.attrs.update(attrs)
@@ -167,10 +164,13 @@ class Room:
     def add_passage(self, passage):
         self.passages.append(passage)
     
+    def label(self) -> str:
+        return self.attrs.get("label", None)
+
     def display_name(self) -> str:
         if self.subtype == 'Unknown':
             return '?'
-        return remove_quotes(remove_underscores(self.label or self.name or self.id))
+        return remove_quotes(remove_underscores(self.label() or self.name or self.id))
 
     def __str__(self):
         return f'[{self.display_name()}]'

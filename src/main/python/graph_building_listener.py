@@ -234,7 +234,7 @@ class GraphBuildingListener(ParseTreeListener):
         port_right = ctx.port_right() and ctx.port_right().getText()[:-1]
         self.context_stack.peek().set_right_end(room, port_right)
         if ctx.special():
-            room.label =  ctx.id_().getText()
+            room.attrs["label"] = ctx.id_().getText()
             room.subtype = "Special"
 
 

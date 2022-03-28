@@ -4,6 +4,7 @@ import math
 SPRING_LENGTH = 0.5
 SPRING_FACTOR = 5
 NODE_REPULSION_FACTOR = 0.1
+REPULSION_THRESHOLD = 2
 TIME_STEP = 0.01
 
 
@@ -21,6 +22,8 @@ def force_on(node, node2, map):
         force = (modifier, 0)
         return force
     
+    if distance > REPULSION_THRESHOLD:
+        return (0, 0)
     if distance < 1 or node.free() or map.free():
         force_scale = NODE_REPULSION_FACTOR/((distance + 0.001)**2)
         force = (vec1[0] * force_scale, vec1[1] * force_scale)
@@ -53,10 +56,14 @@ class Layout:
                     scale = scale_by_modifier[passage.modifier()] if passage.modifier() else 1
                     if passage.to_room.subtype == 'Unknown':
                         scale = 0.5
-                    ideal_position = ((opposite_position[0] + scale*get_x_change(direction) + \
-                                        node.position[0] - scale*get_x_change(opposite_direction))/2, \
-                                        (opposite_position[1] + scale*get_y_change(direction) +
-                                        node.position[1] - scale*get_y_change(opposite_direction))/2)
+//                    ideal_position = ((opposite_position[0] + scale*get_x_change(direction) + \
+//                                        node.position[0] - scale*get_x_change(opposite_direction))/2, \
+//                                        (opposite_position[1] + scale*get_y_change(direction) +
+//                                        node.position[1] - scale*get_y_change(opposite_direction))/2)
+                    ideal_position = ((opposite_position[0] - scale*get_x_change(opposite_direction) + \
+                                      opposite_position[0] + scale*get_x_change(direction))/2, \
+                                      (opposite_position[1] - scale*get_y_change(opposite_direction) +
+                                      opposite_position[1] + scale*get_y_change(direction))/2)
                     
                     vec = (ideal_position[0] - node.position[0], ideal_position[1] - node.position[1])
                     dd = math.sqrt(vec[0]**2 + vec[1]**2)
