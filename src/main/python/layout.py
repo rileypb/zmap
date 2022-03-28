@@ -16,6 +16,10 @@ def opposite(direction):
 def force_on(node, node2):
     vec1 = (node.position[0] - node2.position[0], node.position[1] - node2.position[1])
     distance = math.sqrt(vec1[0]**2 + vec1[1]**2)
+    if distance == 0:
+        modifier = (id(node) - id(node2))/(id(node) + id(node2))
+        force = (modifier, 0)
+        return force
     
     force_scale = NODE_REPULSION_FACTOR/((distance + 0.001)**2)
     force = (vec1[0] * force_scale, vec1[1] * force_scale)
