@@ -37,12 +37,10 @@ class GraphBuildingListener(ParseTreeListener):
         id_ = remove_quotes(remove_underscores(ctx.id_().getText()))
         self.new_map = Map(id_)
         self.maps[id_] = self.new_map
-        print("push map")
         self.context_stack.append(self.new_map)
 
     # Exit a parse tree produced by zmapParser#graph.
     def exitGraph(self, ctx:zmapParser.GraphContext):
-        print("pop map")
         self.context_stack.pop()
 
 
@@ -95,12 +93,10 @@ class GraphBuildingListener(ParseTreeListener):
 
     # Enter a parse tree produced by zmapParser#attr_list.
     def enterAttr_list(self, ctx:zmapParser.Attr_listContext):
-        print("push dict")
         self.context_stack.push(dict())
 
     # Exit a parse tree produced by zmapParser#attr_list.
     def exitAttr_list(self, ctx:zmapParser.Attr_listContext):
-        print("pop dict")
         self.attrs = self.context_stack.pop()
 
 
@@ -131,12 +127,10 @@ class GraphBuildingListener(ParseTreeListener):
     # Enter a parse tree produced by zmapParser#edge_stmt.
     def enterEdge_stmt(self, ctx:zmapParser.Edge_stmtContext):
         passage = self.context_stack.peek().add_passage()
-        print("push passage")
         self.context_stack.push(passage)
 
     # Exit a parse tree produced by zmapParser#edge_stmt.
     def exitEdge_stmt(self, ctx:zmapParser.Edge_stmtContext):
-        print("pop passage")
         passage = self.context_stack.pop()
         if self.attrs:
             passage.set_attrs(self.attrs)
@@ -196,12 +190,10 @@ class GraphBuildingListener(ParseTreeListener):
     def enterNode_stmt(self, ctx:zmapParser.Node_stmtContext):
         node_id = ctx.node_id().getText()
         room = self.context_stack.peek().add_room(node_id)
-        print("push room")
         self.context_stack.push(room)
 
     # Exit a parse tree produced by zmapParser#node_stmt.
     def exitNode_stmt(self, ctx:zmapParser.Node_stmtContext):
-        print("pop room")
         room = self.context_stack.pop()
         if self.attrs:
             room.set_attrs(self.attrs)
