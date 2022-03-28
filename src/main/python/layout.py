@@ -56,10 +56,10 @@ class Layout:
                     scale = scale_by_modifier[passage.modifier()] if passage.modifier() else 1
                     if passage.to_room.subtype == 'Unknown':
                         scale = 0.5
-//                    ideal_position = ((opposite_position[0] + scale*get_x_change(direction) + \
-//                                        node.position[0] - scale*get_x_change(opposite_direction))/2, \
-//                                        (opposite_position[1] + scale*get_y_change(direction) +
-//                                        node.position[1] - scale*get_y_change(opposite_direction))/2)
+#                    ideal_position = ((opposite_position[0] + scale*get_x_change(direction) + \
+#                                        node.position[0] - scale*get_x_change(opposite_direction))/2, \
+#                                        (opposite_position[1] + scale*get_y_change(direction) +
+#                                        node.position[1] - scale*get_y_change(opposite_direction))/2)
                     ideal_position = ((opposite_position[0] - scale*get_x_change(opposite_direction) + \
                                       opposite_position[0] + scale*get_x_change(direction))/2, \
                                       (opposite_position[1] - scale*get_y_change(opposite_direction) +
