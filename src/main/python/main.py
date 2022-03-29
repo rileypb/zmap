@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import ( 
     QSettings
 )
-from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat
+from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat, QCloseEvent
 
 from PyQt5 import uic
 from compiler import Compiler
@@ -28,6 +28,14 @@ class ZApp:
         self.arranger = Arranger()
         self.layout = Layout()
         self.original_text = ""
+
+    def closeEvent(self, event:QCloseEvent):
+        confirmation = self.confirm_destructive_action("quitting")
+        cancel = confirmation & QMessageBox.Cancel
+        if cancel:
+            event.ignore()
+        else:
+            event.accept()
 
     def setup(self):
         self.win = QMainWindow()
@@ -52,6 +60,9 @@ class ZApp:
 
         self.highlighter = SyntaxHighlighter(self.win.plainTextEdit.document())
         self.win.plainTextEdit.document().contentsChange.connect(self.textChanged)
+
+        self.win.closeEvent = self.closeEvent
+        
 
     def do_layout(self):
         map = self.maps[self.win.graphChooser.currentText()]
