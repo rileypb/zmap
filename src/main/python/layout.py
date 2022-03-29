@@ -9,7 +9,7 @@ TIME_STEP = 0.01
 
 
 opposites = { 'n': 's', 'ne': 'sw', 'e': 'w', 'se': 'nw', 's': 'n', 'sw': 'ne',
-              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u'}
+              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u', 'in': 'out', 'out': 'in'}
 
 def opposite(direction):
     return opposites[direction]    

@@ -23,7 +23,7 @@ DASH_PEN.setDashPattern([5, 5])
 
 
 opposites = { 'n': 's', 'ne': 'sw', 'e': 'w', 'se': 'nw', 's': 'n', 'sw': 'ne',
-              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u'}
+              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u', 'in': 'out', 'out': 'in'}
 
 def opposite(direction):
     return opposites[direction]
@@ -35,7 +35,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(room_rect.x() + room_rect.width() / 2, room_rect.y())
         elif direction == 'ne':
             return QPointF(room_rect.x() + room_rect.width(), room_rect.y())
-        elif direction == 'e':
+        elif direction == 'e' or direction == 'in':
             return QPointF(room_rect.x() + room_rect.width(), room_rect.y() + room_rect.height() / 2)
         elif direction == 'se':
             return QPointF(room_rect.x() + room_rect.width(), room_rect.y() + room_rect.height())
@@ -43,7 +43,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(room_rect.x() + room_rect.width() / 2, room_rect.y() + room_rect.height())
         elif direction == 'sw':
             return QPointF(room_rect.x(), room_rect.y() + room_rect.height())
-        elif direction == 'w':
+        elif direction == 'w' or direction == 'out':
             return QPointF(room_rect.x(), room_rect.y() + room_rect.height() / 2)
         elif direction == 'nw':
             return QPointF(room_rect.x(), room_rect.y())
@@ -57,7 +57,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(center_x, room_rect.y())
         elif direction == 'ne':
             return QPointF(center_x + room_rect.width() / 2 * ELLIPSE_SCALE, center_y - room_rect.height() / 2 * ELLIPSE_SCALE)
-        elif direction == 'e':
+        elif direction == 'e' or direction == 'in':
             return QPointF(room_rect.x() + room_rect.width(), center_y)
         elif direction == 'se':
             return QPointF(center_x + room_rect.width() / 2 * ELLIPSE_SCALE, center_y + room_rect.height() / 2 * ELLIPSE_SCALE)
@@ -65,7 +65,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(center_x, room_rect.y() + room_rect.height())
         elif direction == 'sw':
             return QPointF(center_x - room_rect.width() / 2 * ELLIPSE_SCALE, center_y + room_rect.height() / 2 * ELLIPSE_SCALE)
-        elif direction == 'w':
+        elif direction == 'w' or direction == 'out':
             return QPointF(room_rect.x(), room_rect.y() + room_rect.height() / 2)
         elif direction == 'nw':
             return QPointF(center_x - room_rect.width() / 2 * ELLIPSE_SCALE, center_y - room_rect.height() / 2 * ELLIPSE_SCALE)
@@ -162,7 +162,10 @@ class Display:
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
                 line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
-                if from_direction == 'u' or from_direction == 'd' or to_direction == 'u' or to_direction == 'd':
+                if from_direction == 'u' or from_direction == 'd' or \
+                        to_direction == 'u' or to_direction == 'd' or \
+                        from_direction == 'in' or from_direction == 'out' or \
+                        to_direction == 'in' or to_direction == 'out':
                     line.setPen(DASH_PEN)
                 if draw_arrows:
                     add_arrowhead(scene, to_point, from_point)
@@ -175,7 +178,7 @@ class Display:
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
                 line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
-                if from_direction == 'u' or from_direction == 'd':
+                if from_direction == 'u' or from_direction == 'd' or from_direction == 'in' or from_direction == 'out':
                     line.setPen(DASH_PEN)
                 if draw_arrows:
                     add_arrowhead(scene, to_point, from_point)

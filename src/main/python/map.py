@@ -5,7 +5,7 @@ Map, Passage and Room models.
 import random
 
 opposites = { 'n': 's', 'ne': 'sw', 'e': 'w', 'se': 'nw', 's': 'n', 'sw': 'ne',
-              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u'}
+              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u', 'in': 'out', 'out': 'in'}
 
 def opposite(direction):
     return opposites[direction]
@@ -16,10 +16,10 @@ def get_x_change(direction):
         return 1
     if 'w' in direction:
         return -1
-    if 'd' in direction:
-        return 0
-    if 'u' in direction:
-        return 0
+    if direction == 'in':
+        return 1
+    if direction == 'out':
+        return -1
     return 0
 
 
