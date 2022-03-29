@@ -24,7 +24,7 @@ def force_on(node, node2, map):
     
     if distance > REPULSION_THRESHOLD:
         return (0, 0)
-    if distance < 1 or node.free() or map.free():
+    if distance < 0.5 or node.free() or map.free():
         force_scale = NODE_REPULSION_FACTOR/((distance + 0.001)**2)
         force = (vec1[0] * force_scale, vec1[1] * force_scale)
         return force
