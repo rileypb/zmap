@@ -47,6 +47,9 @@ class ZApp:
         rsrc = self.appctxt.get_resource('zmap.ui')
         uic.loadUi(rsrc, self.win)
 
+        background_img_rsrc = self.appctxt.get_resource('vellum1.jpeg')
+        self.display.background_image = background_img_rsrc
+
         self.win.splitter.setSizes([200, 400])
 
         self.win.actionCompile.triggered.connect(self.compile)
