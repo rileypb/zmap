@@ -1,9 +1,9 @@
 
 import math
 
-from PyQt5.QtGui import QColor, QFont, QTextOption, QPolygonF, QBrush, QPen
+from PyQt5.QtGui import QColor, QFont, QTextOption, QPolygonF, QBrush, QPen, QPixmap
 from PyQt5.QtCore import Qt, QPointF, QRectF
-from PyQt5.QtWidgets import QGraphicsScene
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem
 
 
 TEXT_COLOR = QColor("black")
@@ -98,6 +98,7 @@ def add_arrowhead(scene, to_point, from_point):
 
 class Display:
     def display(self, map, scene:QGraphicsScene):
+
          
         room_to_rect = {}
 
@@ -182,3 +183,20 @@ class Display:
                     line.setPen(DASH_PEN)
                 if draw_arrows:
                     add_arrowhead(scene, to_point, from_point)
+        
+
+        # pixmap = QPixmap(self.background_image)
+        # height = pixmap.height()
+        # width = pixmap.width()
+        # x_offset = scene.sceneRect().x() - 500
+        # y_offset = scene.sceneRect().y() - 500
+        # rect_width = scene.sceneRect().width() + 1000
+        # rect_height = scene.sceneRect().height() + 1000
+        # num_x = int(rect_width // width + 1)
+        # num_y = int(rect_height // height + 1)
+        # for i in range(0,num_x):
+        #     for j in range(0,num_y):
+        #         pixmap_item = QGraphicsPixmapItem(pixmap)
+        #         pixmap_item.setOffset(x_offset + i*width, y_offset + j*height)
+        #         scene.addItem(pixmap_item)
+        #         pixmap_item.setZValue(-1)
