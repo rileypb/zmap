@@ -30,10 +30,13 @@ class ZApp:
         self.original_text = ""
 
     def closeEvent(self, event:QCloseEvent):
-        confirmation = self.confirm_destructive_action("quitting")
-        cancel = confirmation & QMessageBox.Cancel
-        if cancel:
-            event.ignore()
+        if self.win.plainTextEdit.toPlainText() != self.original_text:
+            confirmation = self.confirm_destructive_action("quitting")
+            cancel = confirmation & QMessageBox.Cancel
+            if cancel:
+                event.ignore()
+            else:
+                event.accept()
         else:
             event.accept()
 
