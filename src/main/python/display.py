@@ -79,13 +79,9 @@ def add_arrowhead(scene, to_point, from_point):
     point1 = to_point
     dx = from_point.x() - to_point.x()
     dy = from_point.y() - to_point.y()
-    dist = math.sqrt(dx * dx + dy * dy)
+    dist = math.sqrt(dx * dx + dy * dy) + 0.001
     dx /= dist
     dy /= dist
-    # if dx == 0:
-    #     dx = 0.01
-    # if dy == 0:
-    #     dy = 0.01
     point_aux = QPointF(point1.x() + ARROWHEAD_SCALE * dx, point1.y() + ARROWHEAD_SCALE * dy)
     odx = ARROWHEAD_SCALE * dy / 2
     ody = ARROWHEAD_SCALE * -dx / 2
