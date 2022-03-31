@@ -10,40 +10,56 @@
  __If anyone out there would be willing to package zmap for Windows and/or Linux, let me know at rileypb@gmail.com__
  
  ## zmap code
- Here's how to input a map: (if you want, have a look at the [Antlr grammar](https://github.com/rileypb/zmap/blob/main/src/main/python/zmap.g4).)
+ Here's how to input a map: (if you want, have a look at the [Antlr grammar](https://github.com/rileypb/zmap/blob/main/src/main/python/zmap.g4).) The grammar is a modified [graphviz DOT grammar](https://graphviz.org/doc/info/lang.html)
  
  A single zmap file can contain multiple maps. A map is indicated by a name followed by `{ ... }` containing the locations and connections on the map.
  
  For example,
  
  ```
- outside_house {
-[West of House]n<->w[North of House]
-[West of House]s<->w[South of House]
-[North of House]n-->*(Forest Path)
-[North of House]e<->n[Behind House]
-[Behind House]e-->*(Small Clearing)
-[Behind House]s<->e[South of House]
-[West of House]w-->*(Forest sunlight)
-[South of House]s-->*(Forest lantern)
+outside_house {
+West_of_House:n<->w:North_of_House
+West_of_House:s<->w:South_of_House
+North_of_House:n-->Forest_Path*
+North_of_House:e<->n:Behind_House
+Behind_House:e-->Small_Clearing*
+Behind_House:s<->e:South_of_House
+West_of_House:w-->Forest_sunlight*
+South_of_House:s-->Forest_lantern*
 }
 house {
-[Kitchen]u-->?
-[Kitchen]w<->[Living Room]<
-[Kitchen]d-->?
-[Kitchen]e-->*(Behind House)<
+Attic [dark]
 
-[Living Room]w-->*(Front Door)<
-[Living Room]d-->*(Cellar)
+Kitchen:u<->Attic [short]
+Kitchen:w<->Living_Room [short]
+Kitchen:d-->"Can't climb down chimney"*
+Kitchen:e-->Behind_House* [short]
+Living_Room:w-->Front_Door* [short]
+Living_Room:d-->Cellar* [short]
 }
  ```
- A node with a fixed position on the screen is indicated by square brackets; for example, `[West of House]`. A node that should swing freely is indicated by parens: `(North of House)`.  
- 
- An arrow pointing in one direction (`-->` or `<--`) indicates a one-way connection. A two-headed arrow (`<->`) indicates a two-way connection. An arrow is preceded by the direction of the connection (i.e., which way it leaves the originating location). For instance `e-->` indicates a one-way connection pointing east, `e<->` indicates a two-way passage leading east from the originating location and leading west from the target location. A two-way passage may indicate different directions on the two ends: `[West of House]n<->w[North of House]`.
- 
- The right side of a right-pointing one-way arrow may indicate an unknown location `([Kitchen]u-->?)`, or a special feature: `[Living Room]w-->*[Front Door]`. Special features are good for transitions between areas, for example.
- 
- There are two modifiers which may be appended to a connection: `<` and `>`, which indicate a shorter or longer line on the map, respectively.
+
+Passages are of the form `West_of_House:n<->w:North_of_House`, where `West_of_House` and `North_of_House` are rooms, `n` and `w` are the directions the passage leaves each room, and `<->` indicates the passage goes both ways. Passages can also be one-way: `-->`.
+
+When declaring a two-way passage, the direction on the right side of the arrows need not be specified: `East_West_Passage:e<->Round_Room`. In this case the right-hand direction is assumed to be the opposite of the left-hand direction.
+
+Rooms are implicitly declared when mentioned in passage definitions.
+
+Passages can have properties, listed in square brackets: `Kitchen:u<->Attic [short]`. This indicates the passage should be drawn at half the usual length, if possible. The complementary property `long` is also available.
+
+An asterisk indicates a "special": `Kitchen:d-->"Can't climb down chimney"*`. This is handy for indicating directions that cannot be traveled in.
+
+Room names should use underscores to indicate spaces. This limitation can be avoided by surrounding the room name with double quotes. Without quotes the character set is limited to alphanumeric characters and underscores. In quotes, this restriction is lifted.
+
+Room properties can be listed like so: `Attic [dark]`.
+
+Map properties can be listed like so: `graph [splines]`. This property indicates that passages should be drawn using splines. 
+
+Splines can be turned off and on per passage using the values `never`, `always`, and `inherit`. For instance `East_of_Chasm:e<->Gallery [splines=never]`. The default value is `inherit`. 
+
+Unknown locations may be indicated thusly: `Dam:d-->?`. Two-way passages cannot be used with unknown locations. One can indicate unknown locations that are known to be dark: `Gallery:n-->!`
+
+
  
  ![Outside the House](https://github.com/rileypb/zmap/blob/main/example_map.png)
  
