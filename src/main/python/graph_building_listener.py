@@ -1,16 +1,31 @@
 # Generated from /Users/rileypb/dev/zmap/src/main/python/zmap.g4 by ANTLR 4.9.3
 from antlr4 import *
+from graphviz import Graph
 if __name__ is not None and "." in __name__:
     from .zmapParser import zmapParser
 else:
     from zmapParser import zmapParser
 
+from map import Map, Room, Passage
+from utils import Stack
+
+
+def remove_underscores(text:str) -> str:
+    return text.replace('_', ' ')
+
+def remove_quotes(text:str) -> str:
+    if text[0] == '"' and text[-1] == '"':
+        return text[1:-1]
+    return text
+
 # This class defines a complete listener for a parse tree produced by zmapParser.
-class zmapListener(ParseTreeListener):
+class GraphBuildingListener(ParseTreeListener):
 
     # Enter a parse tree produced by zmapParser#parse.
     def enterParse(self, ctx:zmapParser.ParseContext):
-        pass
+        self.maps = {}
+        self.context_stack:Stack = Stack()
+        self.attrs = None
 
     # Exit a parse tree produced by zmapParser#parse.
     def exitParse(self, ctx:zmapParser.ParseContext):
@@ -19,11 +34,14 @@ class zmapListener(ParseTreeListener):
 
     # Enter a parse tree produced by zmapParser#graph.
     def enterGraph(self, ctx:zmapParser.GraphContext):
-        pass
+        id_ = remove_quotes(remove_underscores(ctx.id_().getText()))
+        self.new_map = Map(id_)
+        self.maps[id_] = self.new_map
+        self.context_stack.append(self.new_map)
 
     # Exit a parse tree produced by zmapParser#graph.
     def exitGraph(self, ctx:zmapParser.GraphContext):
-        pass
+        self.context_stack.pop()
 
 
     # Enter a parse tree produced by zmapParser#stmt_list.
@@ -50,16 +68,36 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#attr_stmt.
     def exitAttr_stmt(self, ctx:zmapParser.Attr_stmtContext):
-        pass
+        if ctx.GRAPH():
+            self.graph_attr_stmt()
+        elif ctx.NODE():
+            self.node_attr_stmt()
+        elif ctx.EDGE():
+            self.edge_attr_stmt()
+        else:
+            raise RuntimeError("attr stmt of unknown type")
+        self.attrs = None
+
+    def graph_attr_stmt(self):
+        parent = self.context_stack.peek()
+        parent.set_graph_attrs(self.attrs)
+
+    def node_attr_stmt(self):
+        parent = self.context_stack.peek()
+        parent.set_node_attrs(self.attrs)
+
+    def edge_attr_stmt(self):
+        parent = self.context_stack.peek()
+        parent.set_edge_attrs(self.attrs)
 
 
     # Enter a parse tree produced by zmapParser#attr_list.
     def enterAttr_list(self, ctx:zmapParser.Attr_listContext):
-        pass
+        self.context_stack.push(dict())
 
     # Exit a parse tree produced by zmapParser#attr_list.
     def exitAttr_list(self, ctx:zmapParser.Attr_listContext):
-        pass
+        self.attrs = self.context_stack.pop()
 
 
     # Enter a parse tree produced by zmapParser#a_list.
@@ -77,16 +115,26 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#attr.
     def exitAttr(self, ctx:zmapParser.AttrContext):
-        pass
+        ids = ctx.id_()
+        if len(ids) == 1:
+            self.context_stack.peek()[ids[0].getText()] = True
+        elif len(ids) == 2:
+            self.context_stack.peek()[ids[0].getText()] = ids[1].getText()
+        else:
+            raise RuntimeError(f"Invalid attribute: {ctx.getText()}")
 
 
     # Enter a parse tree produced by zmapParser#edge_stmt.
     def enterEdge_stmt(self, ctx:zmapParser.Edge_stmtContext):
-        pass
+        passage = self.context_stack.peek().add_passage()
+        self.context_stack.push(passage)
 
     # Exit a parse tree produced by zmapParser#edge_stmt.
     def exitEdge_stmt(self, ctx:zmapParser.Edge_stmtContext):
-        pass
+        passage = self.context_stack.pop()
+        if self.attrs:
+            passage.set_attrs(self.attrs)
+            self.attrs = None
 
 
     # Enter a parse tree produced by zmapParser#edgeRHS.
@@ -104,7 +152,10 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#unknown.
     def exitUnknown(self, ctx:zmapParser.UnknownContext):
-        pass
+        id_ = str(id(ctx))
+        room = id_ and self.new_map.add_room(id_)
+        self.context_stack.peek().set_right_end(room, None)
+        room.subtype = "Unknown"
 
 
     # Enter a parse tree produced by zmapParser#dark_unknown.
@@ -113,7 +164,11 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#dark_unknown.
     def exitDark_unknown(self, ctx:zmapParser.Dark_unknownContext):
-        pass
+        id_ = str(id(ctx))
+        room = id_ and self.new_map.add_room(id_)
+        self.context_stack.peek().set_right_end(room, None)
+        room.subtype = "Unknown"
+        room.attrs["dark"] = True
 
 
     # Enter a parse tree produced by zmapParser#edgeop.
@@ -122,16 +177,27 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#edgeop.
     def exitEdgeop(self, ctx:zmapParser.EdgeopContext):
-        pass
+        op = ctx.getText()
+        if op == '-->':
+            self.context_stack.peek().set_one_way()
+        elif op == '<->':
+            self.context_stack.peek().set_two_way()
+        else:
+            raise RuntimeError(f'Unknown edgeop {op}')
 
 
     # Enter a parse tree produced by zmapParser#node_stmt.
     def enterNode_stmt(self, ctx:zmapParser.Node_stmtContext):
-        pass
+        node_id = ctx.node_id().getText()
+        room = self.context_stack.peek().add_room(node_id)
+        self.context_stack.push(room)
 
     # Exit a parse tree produced by zmapParser#node_stmt.
     def exitNode_stmt(self, ctx:zmapParser.Node_stmtContext):
-        pass
+        room = self.context_stack.pop()
+        if self.attrs:
+            room.set_attrs(self.attrs)
+            self.attrs = None
 
 
     # Enter a parse tree produced by zmapParser#node_id.
@@ -149,7 +215,10 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#node_id_left.
     def exitNode_id_left(self, ctx:zmapParser.Node_id_leftContext):
-        pass
+        id_ = ctx.id_() and ctx.id_().getText()
+        room = id_ and self.new_map.add_room(id_)
+        port_left = ctx.port_left() and ctx.port_left().getText()[1:]
+        self.context_stack.peek().set_left_end(room, port_left)
 
 
     # Enter a parse tree produced by zmapParser#node_id_right.
@@ -158,7 +227,15 @@ class zmapListener(ParseTreeListener):
 
     # Exit a parse tree produced by zmapParser#node_id_right.
     def exitNode_id_right(self, ctx:zmapParser.Node_id_rightContext):
-        pass
+        id_ = ctx.id_() and ctx.id_().getText()
+        if ctx.special():
+            id_ = str(id(ctx))
+        room = id_ and self.new_map.add_room(id_)
+        port_right = ctx.port_right() and ctx.port_right().getText()[:-1]
+        self.context_stack.peek().set_right_end(room, port_right)
+        if ctx.special():
+            room.attrs["label"] = ctx.id_().getText()
+            room.subtype = "Special"
 
 
     # Enter a parse tree produced by zmapParser#special.

@@ -1,10 +1,15 @@
 
 import math
 
-from PyQt5.QtGui import QColor, QFont, QTextOption, QPolygonF, QBrush, QPen
+from PyQt5.QtGui import QColor, QFont, QTextOption, QPolygonF, QBrush, QPen, QPixmap, QPainterPath
 from PyQt5.QtCore import Qt, QPointF, QRectF
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem
+
+from map import get_x_change, get_y_change
 
 TEXT_COLOR = QColor("black")
+DARK_TEXT_COLOR = QColor("white")
+DARK_COLOR = QColor("#555555")
 FONT = QFont("sans-serif", pointSize=10)
 SMALL_FONT = QFont("sans-serif", pointSize=6)
 TEXT_OPTION = QTextOption(Qt.AlignCenter)
@@ -19,7 +24,7 @@ DASH_PEN.setDashPattern([5, 5])
 
 
 opposites = { 'n': 's', 'ne': 'sw', 'e': 'w', 'se': 'nw', 's': 'n', 'sw': 'ne',
-              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u'}
+              'w': 'e', 'nw': 'se', 'u': 'd', 'd': 'u', 'in': 'out', 'out': 'in'}
 
 def opposite(direction):
     return opposites[direction]
@@ -31,7 +36,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(room_rect.x() + room_rect.width() / 2, room_rect.y())
         elif direction == 'ne':
             return QPointF(room_rect.x() + room_rect.width(), room_rect.y())
-        elif direction == 'e':
+        elif direction == 'e' or direction == 'in':
             return QPointF(room_rect.x() + room_rect.width(), room_rect.y() + room_rect.height() / 2)
         elif direction == 'se':
             return QPointF(room_rect.x() + room_rect.width(), room_rect.y() + room_rect.height())
@@ -39,7 +44,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(room_rect.x() + room_rect.width() / 2, room_rect.y() + room_rect.height())
         elif direction == 'sw':
             return QPointF(room_rect.x(), room_rect.y() + room_rect.height())
-        elif direction == 'w':
+        elif direction == 'w' or direction == 'out':
             return QPointF(room_rect.x(), room_rect.y() + room_rect.height() / 2)
         elif direction == 'nw':
             return QPointF(room_rect.x(), room_rect.y())
@@ -53,7 +58,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(center_x, room_rect.y())
         elif direction == 'ne':
             return QPointF(center_x + room_rect.width() / 2 * ELLIPSE_SCALE, center_y - room_rect.height() / 2 * ELLIPSE_SCALE)
-        elif direction == 'e':
+        elif direction == 'e' or direction == 'in':
             return QPointF(room_rect.x() + room_rect.width(), center_y)
         elif direction == 'se':
             return QPointF(center_x + room_rect.width() / 2 * ELLIPSE_SCALE, center_y + room_rect.height() / 2 * ELLIPSE_SCALE)
@@ -61,7 +66,7 @@ def attachment_point(subtype, room_rect, direction):
             return QPointF(center_x, room_rect.y() + room_rect.height())
         elif direction == 'sw':
             return QPointF(center_x - room_rect.width() / 2 * ELLIPSE_SCALE, center_y + room_rect.height() / 2 * ELLIPSE_SCALE)
-        elif direction == 'w':
+        elif direction == 'w' or direction == 'out':
             return QPointF(room_rect.x(), room_rect.y() + room_rect.height() / 2)
         elif direction == 'nw':
             return QPointF(center_x - room_rect.width() / 2 * ELLIPSE_SCALE, center_y - room_rect.height() / 2 * ELLIPSE_SCALE)
@@ -77,10 +82,10 @@ def add_arrowhead(scene, to_point, from_point):
     dist = math.sqrt(dx * dx + dy * dy)
     dx /= dist
     dy /= dist
-    if dx == 0:
-        dx = 0.01
-    if dy == 0:
-        dy = 0.01
+    # if dx == 0:
+    #     dx = 0.01
+    # if dy == 0:
+    #     dy = 0.01
     point_aux = QPointF(point1.x() + ARROWHEAD_SCALE * dx, point1.y() + ARROWHEAD_SCALE * dy)
     odx = ARROWHEAD_SCALE * dy / 2
     ody = ARROWHEAD_SCALE * -dx / 2
@@ -93,28 +98,47 @@ def add_arrowhead(scene, to_point, from_point):
     scene.addPolygon(polygon, brush=ARROWHEAD_BRUSH)
 
 class Display:
-    def display(self, map, scene):
+    def display(self, map, scene:QGraphicsScene):
+
          
         room_to_rect = {}
+        splines = map.splines()
 
         for room in map.rooms.values():
+            dark = room.dark()
             x = 200+150*room.position[0]
             y = 200+150*room.position[1]
-            text = scene.addText(room.label)
+            text = scene.addText(room.display_name())
             text.setPos(x,-y)
-            text.setDefaultTextColor(TEXT_COLOR)
+            if dark:
+                text.setDefaultTextColor(DARK_TEXT_COLOR)
+            else:
+                text.setDefaultTextColor(TEXT_COLOR)
+            text.setZValue(0)
+
             text.setFont(FONT)
             text.setTextWidth(50)
             text.document().setDefaultTextOption(TEXT_OPTION)
-            if len(room.label) > 12:
+            if len(room.display_name()) > 12:
                 text.setFont(SMALL_FONT)
             text_bounding_rect = text.boundingRect()
             room.bounding_rect = QRectF(x - text_bounding_rect.width()/2, -y - text_bounding_rect.height()/2, max(50, text_bounding_rect.width()), text_bounding_rect.height())
             text.setPos(x - text_bounding_rect.width()/2, -y - text_bounding_rect.height()/2)
+            if dark:
+                brush = QBrush(DARK_COLOR)
             if not room.subtype:
-                room_to_rect[room] = scene.addRect(room.bounding_rect)
+                if dark:
+                    rect:QRectF = scene.addRect(room.bounding_rect, brush=brush)
+                else:
+                    rect:QRectF = scene.addRect(room.bounding_rect)
+                room_to_rect[room] = rect
             elif room.subtype:
-                room_to_rect[room] = scene.addEllipse(room.bounding_rect)
+                if dark:
+                    room_to_rect[room] = scene.addEllipse(room.bounding_rect, brush=brush)
+                else:
+                    room_to_rect[room] = scene.addEllipse(room.bounding_rect)
+
+            text.setZValue(50)
 
         pairs = {}
         for passage in map.passages:
@@ -130,18 +154,45 @@ class Display:
                 pairs[(from_room, to_room)] = [passage]
         
         for passage in map.passages:
+            passage_splines = passage.splines()
+            if passage_splines == "inherit":
+                pass # just use map value
+            elif passage_splines == "never":
+                splines = False
+            elif passage_splines == "always":
+                splines = True
+            draw_arrows = passage.draw_arrows()
             if passage.two_way:
                 from_room = passage.from_room
                 to_room = passage.to_room
                 from_direction = passage.direction
                 to_direction = passage.back_direction
+                if not to_direction:
+                    to_direction = opposite(from_direction)
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
-                line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
-                if from_direction == 'u' or from_direction == 'd' or to_direction == 'u' or to_direction == 'd':
+
+                if splines:
+                    p = QPainterPath(from_point)
+                    ctrl_pt_1 = QPointF(from_point.x() + get_x_change(from_direction)*20, from_point.y() - get_y_change(from_direction)*20)
+                    ctrl_pt_2 = QPointF(to_point.x() + get_x_change(to_direction)*20, to_point.y() - get_y_change(to_direction)*20)
+                    p.cubicTo(ctrl_pt_1, ctrl_pt_2, to_point)
+                    line = scene.addPath(p)
+                else:
+                    line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
+
+                if from_direction == 'u' or from_direction == 'd' or \
+                        to_direction == 'u' or to_direction == 'd' or \
+                        from_direction == 'in' or from_direction == 'out' or \
+                        to_direction == 'in' or to_direction == 'out':
                     line.setPen(DASH_PEN)
-                add_arrowhead(scene, to_point, from_point)
-                add_arrowhead(scene, from_point, to_point)
+                if draw_arrows:
+                    if splines:
+                        add_arrowhead(scene, to_point, ctrl_pt_2)
+                        add_arrowhead(scene, from_point, ctrl_pt_1)
+                    else:
+                        add_arrowhead(scene, to_point, from_point)
+                        add_arrowhead(scene, from_point, to_point)
             else:
                 from_room = passage.from_room
                 to_room = passage.to_room
@@ -149,7 +200,37 @@ class Display:
                 to_direction = opposite(passage.direction)
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
-                line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
-                if from_direction == 'u' or from_direction == 'd':
+
+                if splines:
+                    p = QPainterPath(from_point)
+                    ctrl_pt_1 = QPointF(from_point.x() + get_x_change(from_direction)*20, from_point.y() - get_y_change(from_direction)*20)
+                    ctrl_pt_2 = QPointF(to_point.x() + get_x_change(to_direction)*20, to_point.y() - get_y_change(to_direction)*20)
+                    p.cubicTo(ctrl_pt_1, ctrl_pt_2, to_point)
+                    line = scene.addPath(p)
+                else:
+                    line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
+
+                if from_direction == 'u' or from_direction == 'd' or from_direction == 'in' or from_direction == 'out':
                     line.setPen(DASH_PEN)
-                add_arrowhead(scene, to_point, from_point)
+                if draw_arrows:
+                    if splines:
+                        add_arrowhead(scene, to_point, ctrl_pt_2)
+                    else:
+                        add_arrowhead(scene, to_point, from_point)
+        
+
+        # pixmap = QPixmap(self.background_image)
+        # height = pixmap.height()
+        # width = pixmap.width()
+        # x_offset = scene.sceneRect().x() - 500
+        # y_offset = scene.sceneRect().y() - 500
+        # rect_width = scene.sceneRect().width() + 1000
+        # rect_height = scene.sceneRect().height() + 1000
+        # num_x = int(rect_width // width + 1)
+        # num_y = int(rect_height // height + 1)
+        # for i in range(0,num_x):
+        #     for j in range(0,num_y):
+        #         pixmap_item = QGraphicsPixmapItem(pixmap)
+        #         pixmap_item.setOffset(x_offset + i*width, y_offset + j*height)
+        #         scene.addItem(pixmap_item)
+        #         pixmap_item.setZValue(-1)

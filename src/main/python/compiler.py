@@ -6,7 +6,8 @@ from antlr4.error.ErrorListener import ErrorListener
 from antlr4.error.Errors import ParseCancellationException
 from zmapLexer import zmapLexer
 from zmapParser import zmapParser
-from zmapListenerImpl import zmapListenerImpl
+# from zmapListenerImpl import zmapListenerImpl
+from graph_building_listener import GraphBuildingListener
 
 from map import *
 
@@ -31,10 +32,10 @@ class Compiler:
             parser.removeErrorListeners()
             parser.addErrorListener(ThrowingErrorListener())
             tree = parser.parse()
-            self.listener = zmapListenerImpl()
+            self.listener = GraphBuildingListener()
             walker = ParseTreeWalker()
             walker.walk(self.listener, tree)
-            return self.listener.new_maps, None
+            return self.listener.maps, None
         except ParseCancellationException as pce:
             return None, pce
 
@@ -44,7 +45,6 @@ class Compiler:
 
  
 if __name__ == '__main__':
-    mymap = Map()
 
     kalamontee ="""
 [Courtyard]d<->[Winding Stair]
@@ -164,10 +164,10 @@ if __name__ == '__main__':
     stream = CommonTokenStream(lexer)
     parser = zmapParser(stream)
     tree = parser.parse()
-    listener = zmapListenerImpl()
+    listener = GraphBuildingListener()
     walker = ParseTreeWalker()
     walker.walk(listener, tree)
     listener.new_map.position_rooms()
-    listener.new_map.graph().view()
     for room_name in listener.new_map.rooms:
         room = listener.new_map.rooms[room_name]
+        print(room)
