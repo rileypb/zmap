@@ -24,13 +24,13 @@ def get_x_change(direction):
 
 
 def get_y_change(direction):
-    if 'n' in direction:
+    if direction in ['n', 'nw', 'ne']:
         return 1
-    if 's' in direction:
+    if direction in ['s', 'sw', 'se']:
         return -1
-    if 'd' in direction:
+    if direction == 'd':
         return -1
-    if 'u' in direction:
+    if direction == 'u':
         return 1
     return 0
 
@@ -91,6 +91,9 @@ class Passage:
     #     else:
     #         self.back_direction = opposite(direction)
 
+    def splines(self) -> bool:
+        return self.attrs.get("splines", "inherit")
+
     def set_left_end(self, room, port:str) -> None:
         self.from_room = room
         self.from_room.add_passage(self)
@@ -114,7 +117,7 @@ class Passage:
         return self.back_direction or opposite(self.direction)
     
     def draw_arrows(self) -> bool:
-        return "noarrows" not in self.attrs or not self.attrs["noarrows"]
+        return not self.attrs.get("noarrows", False)
 
     def modifier(self) -> str:
         if "short" in self.attrs and self.attrs["short"]:
@@ -195,6 +198,9 @@ class Map:
 
     def set_option(self,key, value):
         self.options[key] = value
+
+    def splines(self) -> bool:
+        return "splines" in self.graph_attrs
 
     def free(self) -> bool:
         return "free" in self.graph_attrs and self.graph_attrs["free"]

@@ -1,10 +1,11 @@
 
 import math
 
-from PyQt5.QtGui import QColor, QFont, QTextOption, QPolygonF, QBrush, QPen, QPixmap
+from PyQt5.QtGui import QColor, QFont, QTextOption, QPolygonF, QBrush, QPen, QPixmap, QPainterPath
 from PyQt5.QtCore import Qt, QPointF, QRectF
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem
 
+from map import get_x_change, get_y_change
 
 TEXT_COLOR = QColor("black")
 DARK_TEXT_COLOR = QColor("white")
@@ -81,10 +82,10 @@ def add_arrowhead(scene, to_point, from_point):
     dist = math.sqrt(dx * dx + dy * dy)
     dx /= dist
     dy /= dist
-    if dx == 0:
-        dx = 0.01
-    if dy == 0:
-        dy = 0.01
+    # if dx == 0:
+    #     dx = 0.01
+    # if dy == 0:
+    #     dy = 0.01
     point_aux = QPointF(point1.x() + ARROWHEAD_SCALE * dx, point1.y() + ARROWHEAD_SCALE * dy)
     odx = ARROWHEAD_SCALE * dy / 2
     ody = ARROWHEAD_SCALE * -dx / 2
@@ -101,6 +102,7 @@ class Display:
 
          
         room_to_rect = {}
+        splines = map.splines()
 
         for room in map.rooms.values():
             dark = room.dark()
@@ -152,6 +154,13 @@ class Display:
                 pairs[(from_room, to_room)] = [passage]
         
         for passage in map.passages:
+            passage_splines = passage.splines()
+            if passage_splines == "inherit":
+                pass # just use map value
+            elif passage_splines == "never":
+                splines = False
+            elif passage_splines == "always":
+                splines = True
             draw_arrows = passage.draw_arrows()
             if passage.two_way:
                 from_room = passage.from_room
@@ -162,15 +171,28 @@ class Display:
                     to_direction = opposite(from_direction)
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
-                line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
+
+                if splines:
+                    p = QPainterPath(from_point)
+                    ctrl_pt_1 = QPointF(from_point.x() + get_x_change(from_direction)*20, from_point.y() - get_y_change(from_direction)*20)
+                    ctrl_pt_2 = QPointF(to_point.x() + get_x_change(to_direction)*20, to_point.y() - get_y_change(to_direction)*20)
+                    p.cubicTo(ctrl_pt_1, ctrl_pt_2, to_point)
+                    line = scene.addPath(p)
+                else:
+                    line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
+
                 if from_direction == 'u' or from_direction == 'd' or \
                         to_direction == 'u' or to_direction == 'd' or \
                         from_direction == 'in' or from_direction == 'out' or \
                         to_direction == 'in' or to_direction == 'out':
                     line.setPen(DASH_PEN)
                 if draw_arrows:
-                    add_arrowhead(scene, to_point, from_point)
-                    add_arrowhead(scene, from_point, to_point)
+                    if splines:
+                        add_arrowhead(scene, to_point, ctrl_pt_2)
+                        add_arrowhead(scene, from_point, ctrl_pt_1)
+                    else:
+                        add_arrowhead(scene, to_point, from_point)
+                        add_arrowhead(scene, from_point, to_point)
             else:
                 from_room = passage.from_room
                 to_room = passage.to_room
@@ -178,11 +200,23 @@ class Display:
                 to_direction = opposite(passage.direction)
                 from_point = attachment_point(from_room.subtype, from_room.bounding_rect, from_direction)
                 to_point = attachment_point(to_room.subtype, to_room.bounding_rect, to_direction)
-                line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
+
+                if splines:
+                    p = QPainterPath(from_point)
+                    ctrl_pt_1 = QPointF(from_point.x() + get_x_change(from_direction)*20, from_point.y() - get_y_change(from_direction)*20)
+                    ctrl_pt_2 = QPointF(to_point.x() + get_x_change(to_direction)*20, to_point.y() - get_y_change(to_direction)*20)
+                    p.cubicTo(ctrl_pt_1, ctrl_pt_2, to_point)
+                    line = scene.addPath(p)
+                else:
+                    line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
+
                 if from_direction == 'u' or from_direction == 'd' or from_direction == 'in' or from_direction == 'out':
                     line.setPen(DASH_PEN)
                 if draw_arrows:
-                    add_arrowhead(scene, to_point, from_point)
+                    if splines:
+                        add_arrowhead(scene, to_point, ctrl_pt_2)
+                    else:
+                        add_arrowhead(scene, to_point, from_point)
         
 
         # pixmap = QPixmap(self.background_image)
