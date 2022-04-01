@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 )
 
 from PyQt5.QtCore import ( 
-    QSettings
+    QSettings, QTimer
 )
 from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat, QCloseEvent
 
@@ -28,6 +28,7 @@ class ZApp:
         self.arranger = Arranger()
         self.layout = Layout()
         self.original_text = ""
+        self.scene = None
 
     def closeEvent(self, event:QCloseEvent):
         if self.win.plainTextEdit.toPlainText() != self.original_text:
@@ -113,6 +114,7 @@ class ZApp:
                 self.win.graphChooser.setCurrentIndex(map_names.index(current_rendered_map))
 
     def display_map(self, *args):    
+        hval, vval = self.win.graphicsView.horizontalScrollBar().value(), self.win.graphicsView.verticalScrollBar().value()
         if not self.win.graphChooser.currentText():
             return
         map = self.maps[self.win.graphChooser.currentText()]
@@ -125,10 +127,12 @@ class ZApp:
         for i in range(200):
             self.layout.one_step(map)
 
-        self.display.display(map, self.scene)    
-        
+        self.display.display(map, self.scene) 
+        def _setter(*args):
+            self.win.graphicsView.horizontalScrollBar().setValue(hval)
+            self.win.graphicsView.verticalScrollBar().setValue(vval)
+        QTimer.singleShot(0, _setter)
          
-
     def confirm_destructive_action(self, action):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
