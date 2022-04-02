@@ -1,6 +1,6 @@
 
 /*
- Original copyright Terrance Parr; see below. Modifications for zmap made by Philip Riley.
+ Original copyright Terence Parr; see below. Modifications for zmap made by Philip Riley.
 */
 
 /*
@@ -40,7 +40,7 @@ parse
    ;
 
 graph
-   : id_? '{' stmt_list '}'
+   : id_ '{' stmt_list '}'
    ;
 
 stmt_list
@@ -123,7 +123,7 @@ id_
 
 
 GRAPH
-   : 'graph'
+   : 'map'
    ;
 
 NODE
