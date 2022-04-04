@@ -118,6 +118,9 @@ class Passage:
     
     def draw_arrows(self) -> bool:
         return not self.attrs.get("noarrows", False)
+    
+    def hidden(self) -> bool:
+        return self.attrs.get("hidden", False)
 
     def modifier(self) -> str:
         if "short" in self.attrs and self.attrs["short"]:
@@ -252,7 +255,7 @@ class Map:
                         calculate_position_for(next_room)
                     rooms_by_position[next_room.position] = next_room
             if all_rooms:
-                one_room = random.choice(all_rooms)
+                one_room = all_rooms[0]
                 frontier.append(one_room)
                 one_room.position = (0, 0)
 
