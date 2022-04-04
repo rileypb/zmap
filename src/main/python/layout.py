@@ -19,7 +19,8 @@ def force_on(node, node2, map):
     distance = math.sqrt(vec1[0]**2 + vec1[1]**2)
     if distance == 0:
         modifier = (hash(node.id) - hash(node2.id))/(hash(node.id) + hash(node2.id))
-        force = (modifier, 0)
+        modifier2 = (hash(node.id*2) - hash(node2.id*2))/(hash(node.id*2) + hash(node2.id*2))
+        force = (modifier, modifier2)
         return force
     
     if distance > REPULSION_THRESHOLD:
