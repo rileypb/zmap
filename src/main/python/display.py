@@ -21,6 +21,14 @@ ARROWHEAD_BRUSH.setColor(QColor("black"))
 ARROWHEAD_BRUSH.setStyle(Qt.SolidPattern)
 DASH_PEN = QPen()
 DASH_PEN.setDashPattern([5, 5])
+DASH_DOT_PEN = QPen()
+DASH_DOT_PEN.setStyle(Qt.PenStyle.DashDotLine)
+DASH_DOT_PEN.setWidth(2)
+DOT_PEN = QPen()
+DOT_PEN.setStyle(Qt.PenStyle.DotLine)
+DOT_PEN.setWidth(2)
+DOT_PEN.setCapStyle(Qt.PenCapStyle.FlatCap)
+DASHED_DIRECTION = ['u', 'd', 'in', 'out']
 
 
 opposites = { 'n': 's', 'ne': 'sw', 'e': 'w', 'se': 'nw', 's': 'n', 'sw': 'ne',
@@ -177,11 +185,13 @@ class Display:
                 else:
                     line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
 
-                if from_direction == 'u' or from_direction == 'd' or \
-                        to_direction == 'u' or to_direction == 'd' or \
-                        from_direction == 'in' or from_direction == 'out' or \
-                        to_direction == 'in' or to_direction == 'out':
+
+                if (from_direction in DASHED_DIRECTION or to_direction in DASHED_DIRECTION) and passage.hidden():
+                    line.setPen(DASH_DOT_PEN)
+                elif from_direction in DASHED_DIRECTION or to_direction in DASHED_DIRECTION:
                     line.setPen(DASH_PEN)
+                elif passage.hidden():
+                    line.setPen(DOT_PEN)
                 if draw_arrows:
                     if splines:
                         add_arrowhead(scene, to_point, ctrl_pt_2)
@@ -206,8 +216,13 @@ class Display:
                 else:
                     line = scene.addLine(from_point.x(), from_point.y(), to_point.x(), to_point.y())
 
-                if from_direction == 'u' or from_direction == 'd' or from_direction == 'in' or from_direction == 'out':
+
+                if from_direction in DASHED_DIRECTION and passage.hidden():
+                    line.setPen(DASH_DOT_PEN)
+                elif from_direction in DASHED_DIRECTION:
                     line.setPen(DASH_PEN)
+                elif passage.hidden():
+                    line.setPen(DOT_PEN)
                 if draw_arrows:
                     if splines:
                         add_arrowhead(scene, to_point, ctrl_pt_2)
