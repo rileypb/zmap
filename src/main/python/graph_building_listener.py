@@ -116,8 +116,11 @@ class GraphBuildingListener(ParseTreeListener):
     # Exit a parse tree produced by zmapParser#attr.
     def exitAttr(self, ctx:zmapParser.AttrContext):
         ids = ctx.id_()
-        if len(ids) == 1:
+        if len(ids) == 1 and not ctx.tuple_():
             self.context_stack.peek()[ids[0].getText()] = True
+        elif len(ids) == 1 and ctx.tuple_():
+            actual_tuple = (ctx.tuple_().id_()[0].getText(), ctx.tuple_().id_()[1].getText())
+            self.context_stack.peek()[ids[0].getText()] = actual_tuple
         elif len(ids) == 2:
             self.context_stack.peek()[ids[0].getText()] = ids[1].getText()
         else:

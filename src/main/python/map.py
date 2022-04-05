@@ -34,9 +34,13 @@ def get_y_change(direction):
         return 1
     return 0
 
-scale_by_modifier = { '<': 0.5, '>': 2.0 }
+scale_by_modifier = { '<': 0.5, '>': 2.0, 'short': 0.5, 'normal': 1.0, 'long': 2.0 }
 
-def calculate_position_for(room):
+def calculate_position_for(room, map):
+    if room.pos():
+        pos = room.pos()
+        room.position = (float(pos[0]), float(pos[1]))
+        return
     cx = 0
     cy = 0
     count = 0
@@ -47,7 +51,9 @@ def calculate_position_for(room):
             if not direction:
                 direction = opposite(passage.direction)
             opposite_position = opposite_room.position
-            scale = scale_by_modifier[passage.modifier()] if passage.modifier() else 1
+            scale = scale_by_modifier[map.path_length()] 
+            scale = scale_by_modifier[passage.modifier()] if passage.modifier() else scale
+            
             if passage.to_room.subtype == 'Unknown':
                 scale = 0.5
             new_position = (opposite_position[0] + scale*get_x_change(direction), opposite_position[1] + scale*get_y_change(direction))
@@ -123,10 +129,13 @@ class Passage:
         return self.attrs.get("hidden", False)
 
     def modifier(self) -> str:
-        if "short" in self.attrs and self.attrs["short"]:
-            return '<'
-        if "long" in self.attrs and self.attrs["long"]:
-            return '>'
+        if "short" in self.attrs:
+            return 'short'
+        if "long" in self.attrs:
+            return 'long'
+        if "normal" in self.attrs:
+            return "normal"
+        return None
 
     def __str__(self):
         if self.to_room:
@@ -163,6 +172,12 @@ class Room:
 
     def free(self):
         return self.subtype or self.attrs.get("free", False)
+
+    def fixed(self) -> bool:
+        return self.attrs.get("fixed", False)
+
+    def pos(self) -> tuple:
+        return self.attrs.get("pos", None)
 
     def set_attrs(self, attrs:dict) -> None:
         self.attrs.update(attrs)
@@ -201,6 +216,9 @@ class Map:
 
     def set_option(self,key, value):
         self.options[key] = value
+
+    def path_length(self):
+        return self.graph_attrs.get("path_length", "normal")
 
     def splines(self) -> bool:
         return "splines" in self.graph_attrs
@@ -252,7 +270,7 @@ class Map:
                         continue
                     frontier.append(next_room)
                     if not next_room.position:
-                        calculate_position_for(next_room)
+                        calculate_position_for(next_room, self)
                     rooms_by_position[next_room.position] = next_room
             if all_rooms:
                 one_room = all_rooms[0]

@@ -65,6 +65,11 @@ a_list
 
 attr
    : id_ ( '=' id_ )? 
+   | id_ '=' tuple_ 
+   ;
+
+tuple_
+   : '(' id_ ',' id_ ')'
    ;
 
 edge_stmt

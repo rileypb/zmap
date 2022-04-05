@@ -80,6 +80,15 @@ class zmapListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by zmapParser#tuple_.
+    def enterTuple_(self, ctx:zmapParser.Tuple_Context):
+        pass
+
+    # Exit a parse tree produced by zmapParser#tuple_.
+    def exitTuple_(self, ctx:zmapParser.Tuple_Context):
+        pass
+
+
     # Enter a parse tree produced by zmapParser#edge_stmt.
     def enterEdge_stmt(self, ctx:zmapParser.Edge_stmtContext):
         pass
