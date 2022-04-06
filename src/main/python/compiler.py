@@ -34,7 +34,10 @@ class Compiler:
             tree = parser.parse()
             self.listener = GraphBuildingListener()
             walker = ParseTreeWalker()
-            walker.walk(self.listener, tree)
+            try:
+                walker.walk(self.listener, tree)
+            except RuntimeError as err:
+                raise ParseCancellationException(*err.args)
             return self.listener.maps, None
         except ParseCancellationException as pce:
             return None, pce

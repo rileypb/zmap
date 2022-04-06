@@ -18,6 +18,8 @@ def remove_quotes(text:str) -> str:
         return text[1:-1]
     return text
 
+directions = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw', 'u', 'd', 'in', 'out']
+
 # This class defines a complete listener for a parse tree produced by zmapParser.
 class GraphBuildingListener(ParseTreeListener):
 
@@ -221,6 +223,8 @@ class GraphBuildingListener(ParseTreeListener):
         id_ = ctx.id_() and ctx.id_().getText()
         room = id_ and self.new_map.add_room(id_)
         port_left = ctx.port_left() and ctx.port_left().getText()[1:]
+        if port_left not in directions:
+            raise RuntimeError((ctx.port_left().start.line, 0, f'Unrecognized direction: {port_left}'),)
         self.context_stack.peek().set_left_end(room, port_left)
 
 
@@ -235,6 +239,8 @@ class GraphBuildingListener(ParseTreeListener):
             id_ = str(id(ctx))
         room = id_ and self.new_map.add_room(id_)
         port_right = ctx.port_right() and ctx.port_right().getText()[:-1]
+        if port_right and port_right not in directions:
+            raise RuntimeError((ctx.port_right().start.line, 0, f'Unrecognized direction: {port_right}'),)
         self.context_stack.peek().set_right_end(room, port_right)
         if ctx.special():
             room.attrs["label"] = ctx.id_().getText()
