@@ -1,3 +1,5 @@
+# Note: zmap has been superseded by [zmap_cli](https://github.com/rileypb/zmap_cli).
+
 # zmap
  An interactive fiction mapper
 
